@@ -4,11 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.login.LoginI18n;
@@ -21,7 +23,8 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.PWA;
 
 @PageTitle("Days calculator")
-@StyleSheet("../frontend/css/login.css")
+@StyleSheet("../frontend/css/style.css")
+@HtmlImport("../frontend/html/hourglass.html")
 @Route
 @PWA(name = "Project Base for Vaadin Flow with Spring", shortName = "Project Base")
 public class MainView extends VerticalLayout {
@@ -34,18 +37,24 @@ public class MainView extends VerticalLayout {
     private final void showMainPage() {
         Button signInButton = new Button(" Sign In", e -> showLoginForm().setOpened(true));
         Icon signInIcon = VaadinIcon.SIGN_IN.create();
+        signInButton.addClassName("startPageButton");
         signInButton.setMaxWidth("10em");
         signInButton.setIcon(signInIcon);
 
         Button signUpButton = new Button(" Sign Up");
         Icon signUpIcon = VaadinIcon.USER.create();
+        signUpButton.addClassName("startPageButton");
         signUpButton.setMaxWidth("10em");
         signUpButton.setIcon(signUpIcon);
 
         FormLayout nameLayout = new FormLayout(signInButton, signUpButton);
-        nameLayout.addClassName("mainWindow");
+        nameLayout.addClassName("startPageButtons");
         nameLayout.setResponsiveSteps(new ResponsiveStep("0", 1), new ResponsiveStep("21em", 2));
-        add(nameLayout);
+
+        Label messageLabel = new Label("Don't waste your time");
+        messageLabel.addClassName("textOnMainPage");
+
+        add(nameLayout, messageLabel);
     }
 
     private final void showWrongLoginNotification(String notificationText) {

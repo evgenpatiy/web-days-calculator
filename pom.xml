@@ -7,7 +7,7 @@
     <artifactId>web-days-calculator</artifactId>
     <name>web-days-calculator</name>
     <version>1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>

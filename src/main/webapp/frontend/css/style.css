@@ -1,0 +1,37 @@
+html {
+        background: linear-gradient(145deg, #484962 30%, #d06b41 100%);
+}
+
+.textOnMainPage {
+    width: 400px;
+    color: var(--lumo-base-color);
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.startPageButtons {
+    width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.startPageButton {
+    color: var(--lumo-base-color);
+}
+
+.wrongLoginNotification {
+    color: red;
+}
+
+.loginTitle {
+    text-align: center;
+    color: var(--lumo-base-color);
+    font-size: 32px;
+}
+
+.loginIcon {
+    width: 30px;
+    height: 30 px;
+    top: -4px;
+}
