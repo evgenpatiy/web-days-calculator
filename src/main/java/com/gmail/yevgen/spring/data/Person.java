@@ -16,5 +16,5 @@ public class Person {
     private String name;
     private String loginName;
     private String password;
-    private Date dateOfBirth;
+    private Date birthDate;
 }

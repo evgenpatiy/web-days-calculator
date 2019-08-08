@@ -7,8 +7,7 @@ import com.gmail.yevgen.spring.ui.SignUpView;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Label;
@@ -18,15 +17,16 @@ import com.vaadin.flow.component.login.LoginI18n;
 import com.vaadin.flow.component.login.LoginOverlay;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.Notification.Position;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.PWA;
 
 @PageTitle("Days calculator")
-//@StyleSheet("../frontend/css/style.css")
+@StyleSheet("../frontend/css/style.css")
 @Route("")
-@PWA(name = "Project Base for Vaadin Flow with Spring", shortName = "Project Base")
+@PWA(name = "Web days calculator", shortName = "dayscalc", iconPath = "img/icons/logo.png")
 public class MainView extends VerticalLayout {
     private static final long serialVersionUID = 7657167124498205619L;
 
@@ -37,24 +37,20 @@ public class MainView extends VerticalLayout {
     private final void showMainPage() {
         Button signInButton = new Button(" Sign In", e -> showLoginForm().setOpened(true));
         Icon signInIcon = VaadinIcon.SIGN_IN.create();
-        signInButton.addClassName("startPageButton");
         signInButton.setMaxWidth("10em");
         signInButton.setIcon(signInIcon);
+        signInButton.getStyle().set("marginRight", "10px");
 
         Button signUpButton = new Button(" Sign Up", e -> UI.getCurrent().navigate(SignUpView.class));
         Icon signUpIcon = VaadinIcon.USER.create();
-        signUpButton.addClassName("startPageButton");
         signUpButton.setMaxWidth("10em");
         signUpButton.setIcon(signUpIcon);
 
-        FormLayout nameLayout = new FormLayout(signInButton, signUpButton);
-        nameLayout.addClassName("startPageButtons");
-        nameLayout.setResponsiveSteps(new ResponsiveStep("0", 1), new ResponsiveStep("21em", 2));
+        HorizontalLayout buttonsLine = new HorizontalLayout();
+        buttonsLine.add(signInButton, signUpButton);
 
         Label messageLabel = new Label("Don't waste your time");
-        messageLabel.addClassName("textOnMainPage");
-
-        add(nameLayout, messageLabel);
+        add(buttonsLine, messageLabel);
         setSizeFull();
         setAlignItems(Alignment.CENTER);
     }
