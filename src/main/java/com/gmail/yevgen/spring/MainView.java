@@ -2,14 +2,15 @@ package com.gmail.yevgen.spring;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.gmail.yevgen.spring.data.Person;
+import com.gmail.yevgen.spring.ui.SignUpView;
 import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.dependency.HtmlImport;
-import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -23,14 +24,13 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.PWA;
 
 @PageTitle("Days calculator")
-@StyleSheet("../frontend/css/style.css")
-@HtmlImport("../frontend/html/hourglass.html")
-@Route
+//@StyleSheet("../frontend/css/style.css")
+@Route("")
 @PWA(name = "Project Base for Vaadin Flow with Spring", shortName = "Project Base")
 public class MainView extends VerticalLayout {
     private static final long serialVersionUID = 7657167124498205619L;
 
-    public MainView(@Autowired MessageBean bean) {
+    public MainView(@Autowired Person person) {
         showMainPage();
     }
 
@@ -41,7 +41,7 @@ public class MainView extends VerticalLayout {
         signInButton.setMaxWidth("10em");
         signInButton.setIcon(signInIcon);
 
-        Button signUpButton = new Button(" Sign Up");
+        Button signUpButton = new Button(" Sign Up", e -> UI.getCurrent().navigate(SignUpView.class));
         Icon signUpIcon = VaadinIcon.USER.create();
         signUpButton.addClassName("startPageButton");
         signUpButton.setMaxWidth("10em");
@@ -55,6 +55,8 @@ public class MainView extends VerticalLayout {
         messageLabel.addClassName("textOnMainPage");
 
         add(nameLayout, messageLabel);
+        setSizeFull();
+        setAlignItems(Alignment.CENTER);
     }
 
     private final void showWrongLoginNotification(String notificationText) {
@@ -69,7 +71,7 @@ public class MainView extends VerticalLayout {
     }
 
     private final LoginOverlay showLoginForm() {
-        H1 title = new H1();
+        H2 title = new H2();
         title.addClassName("loginTitle");
 
         Icon icon = VaadinIcon.HOURGLASS.create();

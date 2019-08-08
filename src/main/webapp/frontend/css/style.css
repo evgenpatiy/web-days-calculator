@@ -1,13 +1,9 @@
 html {
-        background: linear-gradient(145deg, #484962 30%, #d06b41 100%);
+    background: linear-gradient(white 40%, 30%, cyan 60%);
 }
 
 .textOnMainPage {
-    width: 400px;
     color: var(--lumo-base-color);
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 .startPageButtons {
@@ -27,7 +23,6 @@ html {
 .loginTitle {
     text-align: center;
     color: var(--lumo-base-color);
-    font-size: 32px;
 }
 
 .loginIcon {
