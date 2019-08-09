@@ -3,6 +3,7 @@ package com.gmail.yevgen.spring;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.gmail.yevgen.spring.data.Person;
+import com.gmail.yevgen.spring.ui.Hourglass;
 import com.gmail.yevgen.spring.ui.SignUpView;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
@@ -49,8 +50,11 @@ public class MainView extends VerticalLayout {
         HorizontalLayout buttonsLine = new HorizontalLayout();
         buttonsLine.add(signInButton, signUpButton);
 
+        Hourglass hourGlass = new Hourglass();
+        Label lll = new Label("lllaaaabbbbeeeellll");
+
         Label messageLabel = new Label("Don't waste your time");
-        add(buttonsLine, messageLabel);
+        add(buttonsLine, messageLabel, hourGlass, lll);
         setSizeFull();
         setAlignItems(Alignment.CENTER);
     }
