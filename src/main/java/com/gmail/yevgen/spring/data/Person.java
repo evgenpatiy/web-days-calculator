@@ -1,6 +1,6 @@
 package com.gmail.yevgen.spring.data;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import org.springframework.stereotype.Service;
 
@@ -16,5 +16,5 @@ public class Person {
     private String name;
     private String loginName;
     private String password;
-    private Date birthDate;
+    private LocalDate birthDate;
 }
