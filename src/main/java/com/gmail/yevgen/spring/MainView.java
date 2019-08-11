@@ -1,8 +1,5 @@
 package com.gmail.yevgen.spring;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.gmail.yevgen.spring.data.Person;
 import com.gmail.yevgen.spring.ui.Hourglass;
 import com.gmail.yevgen.spring.ui.SignUpView;
 import com.vaadin.flow.component.Text;
@@ -31,11 +28,7 @@ import com.vaadin.flow.server.PWA;
 public class MainView extends VerticalLayout {
     private static final long serialVersionUID = 7657167124498205619L;
 
-    public MainView(@Autowired Person person) {
-        showMainPage();
-    }
-
-    private final void showMainPage() {
+    public MainView() {
         Button signInButton = new Button(" Sign In", e -> showLoginForm().setOpened(true));
         Icon signInIcon = VaadinIcon.SIGN_IN.create();
         signInButton.setMaxWidth("10em");

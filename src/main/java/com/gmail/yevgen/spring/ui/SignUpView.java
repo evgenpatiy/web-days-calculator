@@ -5,7 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.gmail.yevgen.spring.MainView;
-import com.gmail.yevgen.spring.data.Person;
+import com.gmail.yevgen.spring.domain.Person;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;
