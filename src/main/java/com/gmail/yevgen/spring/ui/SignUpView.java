@@ -32,7 +32,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 
 @Route("signup")
-@PageTitle("Days calculator")
+@PageTitle("Days calculator - new user")
 public class SignUpView extends VerticalLayout {
     private static final long serialVersionUID = 2659811876997659447L;
 

@@ -102,10 +102,15 @@
 
     <build>
         <plugins>
+
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.gmail.yevgen.spring.Application</mainClass>
+                </configuration>
             </plugin>
+
         </plugins>
     </build>
 
@@ -132,6 +137,16 @@
             </dependencies>
 
             <build>
+
+                <resources>
+                    <resource>
+                        <directory>src/main/webapp/frontend</directory>
+                        <includes>
+                            <include>**/*.png</include>
+                        </includes>
+                    </resource>
+                </resources>
+
                 <plugins>
                     <plugin>
                         <groupId>com.vaadin</groupId>
@@ -160,6 +175,16 @@
         <profile>
             <id>integration-tests</id>
             <build>
+
+                <resources>
+                    <resource>
+                        <directory>src/main/webapp/frontend</directory>
+                        <includes>
+                            <include>**/*.png</include>
+                        </includes>
+                    </resource>
+                </resources>
+
                 <plugins>
                     <plugin>
                         <groupId>org.springframework.boot</groupId>

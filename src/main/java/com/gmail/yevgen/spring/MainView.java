@@ -1,6 +1,5 @@
 package com.gmail.yevgen.spring;
 
-import com.gmail.yevgen.spring.ui.Hourglass;
 import com.gmail.yevgen.spring.ui.SignUpView;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
@@ -43,11 +42,8 @@ public class MainView extends VerticalLayout {
         HorizontalLayout buttonsLine = new HorizontalLayout();
         buttonsLine.add(signInButton, signUpButton);
 
-        Hourglass hourGlass = new Hourglass();
-        Label lll = new Label("lllaaaabbbbeeeellll");
-
         Label messageLabel = new Label("Don't waste your time");
-        add(buttonsLine, messageLabel, hourGlass, lll);
+        add(buttonsLine, messageLabel);
         setSizeFull();
         setAlignItems(Alignment.CENTER);
     }
@@ -75,6 +71,7 @@ public class MainView extends VerticalLayout {
         LoginI18n i18n = LoginI18n.createDefault();
         i18n.setAdditionalInformation("Provide non-empty login and password");
         LoginOverlay login = new LoginOverlay();
+        login.setAction("dayspanel");
         login.setForgotPasswordButtonVisible(false);
         login.setTitle(title);
         login.setDescription("How many days you're lived already");
