@@ -5,7 +5,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.gmail.yevgen.spring.domain.Person;
 import com.gmail.yevgen.spring.domain.PersonRepository;
 import com.gmail.yevgen.spring.ui.SignUpView;
 import com.vaadin.flow.component.Text;
@@ -35,16 +37,19 @@ import com.vaadin.flow.server.PWA;
 public class MainView extends VerticalLayout {
     private static final long serialVersionUID = 7657167124498205619L;
     private PersonRepository personRepository;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public MainView(PersonRepository personRepository) {
+    public MainView(PersonRepository personRepository, PasswordEncoder passwordEncoder) {
         this.personRepository = personRepository;
+        this.passwordEncoder = passwordEncoder;
+
         Button signInButton = new Button(" Sign In", VaadinIcon.SIGN_IN.create(), e -> showLoginForm().setOpened(true));
         signInButton.setMaxWidth("10em");
         signInButton.getStyle().set("marginRight", "10px");
 
         Button signUpButton = new Button(" Sign Up", VaadinIcon.USER.create(),
-                e -> UI.getCurrent().navigate(SignUpView.class));
+                event -> UI.getCurrent().navigate(SignUpView.class));
         signUpButton.setMaxWidth("10em");
 
         HorizontalLayout buttonsLine = new HorizontalLayout();
@@ -58,7 +63,7 @@ public class MainView extends VerticalLayout {
 
     private final void showWrongLoginNotification(String notificationText) {
         Div content = new Div();
-        content.addClassName("wrongLoginNotification");
+        content.addClassName("errorNotification");
         content.setText(notificationText);
 
         Notification wrongLoginNotification = new Notification(content);
@@ -83,15 +88,15 @@ public class MainView extends VerticalLayout {
         login.setTitle(title);
         login.setDescription("How many days you're lived already");
         login.setI18n(i18n);
-        login.addLoginListener(e -> {
-            if (ifPersonWithLoginExists(e.getUsername())) {
-                if (ifPersonWithLoginAndPasswordExists(e.getUsername(), e.getPassword())) {
+        login.addLoginListener(event -> {
+            if (ifPersonWithLoginExists(event.getUsername())) {
+                if (ifPersonWithLoginAndPasswordExists(event.getUsername(), event.getPassword())) {
                     login.close();
                     UI.getCurrent().navigate("dayspanel",
-                            QueryParameters.simple(Stream.of(new SimpleEntry<>("user", e.getUsername()))
+                            QueryParameters.simple(Stream.of(new SimpleEntry<>("user", event.getUsername()))
                                     .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue))));
                 } else {
-                    showWrongLoginNotification("Wrong password for user " + e.getUsername());
+                    showWrongLoginNotification("Wrong password for user " + event.getUsername());
                     login.setEnabled(true);
                 }
             } else {
@@ -107,6 +112,7 @@ public class MainView extends VerticalLayout {
     }
 
     boolean ifPersonWithLoginAndPasswordExists(String login, String password) {
-        return personRepository.findByLoginAndPassword(login, password) != null;
+        Person p = personRepository.findByLogin(login);
+        return p != null && passwordEncoder.matches(password, p.getPassword());
     }
 }

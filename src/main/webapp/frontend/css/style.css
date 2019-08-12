@@ -3,8 +3,9 @@ html {
     background: linear-gradient(145deg, white 30%, #0099ff 100%);
 }
 
-.wrongLoginNotification {
+.errorNotification {
     color: red;
+    text-align: center;
 }
 
 .loginTitle {

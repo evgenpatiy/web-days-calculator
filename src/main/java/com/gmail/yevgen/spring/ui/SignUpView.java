@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.gmail.yevgen.spring.MainView;
 import com.gmail.yevgen.spring.domain.Person;
@@ -17,6 +18,7 @@ import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep.LabelsPosition;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -44,11 +46,14 @@ import com.vaadin.flow.server.StreamResource;
 public class SignUpView extends VerticalLayout {
     private static final long serialVersionUID = 2659811876997659447L;
     private final PersonRepository personRepository;
+    private PasswordEncoder passwordEncoder;
     private Person person;
 
     @Autowired
-    public SignUpView(PersonRepository personRepository) {
+    public SignUpView(PersonRepository personRepository, PasswordEncoder passwordEncoder) {
         this.personRepository = personRepository;
+        this.passwordEncoder = passwordEncoder;
+
         FormLayout layoutWithBinder = new FormLayout();
         layoutWithBinder.setResponsiveSteps(new ResponsiveStep("0", 1, LabelsPosition.TOP),
                 new ResponsiveStep("600px", 1, LabelsPosition.ASIDE));
@@ -142,8 +147,14 @@ public class SignUpView extends VerticalLayout {
         confirmButton.addClickListener(event -> {
             if (binder.writeBeanIfValid(person)) {
                 if (ifPersonWithLoginExists(person)) {
-                    Notification.show("User " + person.getLogin() + " already exists, choose different username please",
-                            3000, Position.MIDDLE);
+                    Div content = new Div();
+                    content.addClassName("errorNotification");
+                    content.setText("User " + person.getLogin() + " already exists. Choose different login");
+
+                    Notification wrongLoginNotification = new Notification(content);
+                    wrongLoginNotification.setDuration(3000);
+                    wrongLoginNotification.setPosition(Position.MIDDLE);
+                    wrongLoginNotification.open();
                 } else {
                     savePerson(person);
                     UI.getCurrent().navigate("dayspanel",
@@ -170,6 +181,7 @@ public class SignUpView extends VerticalLayout {
     }
 
     void savePerson(Person p) {
+        p.setPassword(passwordEncoder.encode(p.getPassword()));
         personRepository.save(p);
     }
 
