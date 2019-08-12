@@ -98,7 +98,7 @@ public class DaysView extends VerticalLayout implements HasUrlParameter<String> 
         layoutWithBinder.addFormItem(birthDateField, "Birtdate");
         layoutWithBinder.addFormItem(daysLivedLabel, "");
 
-        daysViewLayout.add(layoutWithBinder, personGrid);
-        add(daysViewLayout);
+        daysViewLayout.add(layoutWithBinder);
+        add(daysViewLayout, personGrid);
     }
 }

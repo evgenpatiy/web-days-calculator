@@ -1,4 +1,4 @@
-package com.gmail.yevgen.spring;
+package com.gmail.yevgen.spring.ui;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.stream.Collectors;
@@ -9,7 +9,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.gmail.yevgen.spring.domain.Person;
 import com.gmail.yevgen.spring.domain.PersonRepository;
-import com.gmail.yevgen.spring.ui.SignUpView;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
