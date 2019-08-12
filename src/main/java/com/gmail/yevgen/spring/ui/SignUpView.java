@@ -82,18 +82,18 @@ public class SignUpView extends VerticalLayout {
             }
         });
 
-        TextField name = new TextField();
-        name.setValueChangeMode(ValueChangeMode.EAGER);
+        TextField nameField = new TextField();
+        nameField.setValueChangeMode(ValueChangeMode.EAGER);
 
-        TextField loginName = new TextField();
-        loginName.setValueChangeMode(ValueChangeMode.EAGER);
+        TextField loginField = new TextField();
+        loginField.setValueChangeMode(ValueChangeMode.EAGER);
 
-        PasswordField password = new PasswordField();
-        password.setValueChangeMode(ValueChangeMode.EAGER);
-        PasswordField confirmPassword = new PasswordField();
-        password.setValueChangeMode(ValueChangeMode.EAGER);
+        PasswordField passwordField = new PasswordField();
+        passwordField.setValueChangeMode(ValueChangeMode.EAGER);
+        PasswordField confirmPasswordField = new PasswordField();
+        passwordField.setValueChangeMode(ValueChangeMode.EAGER);
 
-        DatePicker birthDate = new DatePicker();
+        DatePicker birthDatePicker = new DatePicker();
 
         Button confirmButton = new Button("Confirm", VaadinIcon.USER.create());
         Button resetButton = new Button("Reset", VaadinIcon.WARNING.create());
@@ -101,45 +101,45 @@ public class SignUpView extends VerticalLayout {
 
         layoutWithBinder.addFormItem(photo, "");
         layoutWithBinder.addFormItem(upload, "Photo");
-        layoutWithBinder.addFormItem(name, "Name");
-        layoutWithBinder.addFormItem(loginName, "Login");
-        layoutWithBinder.addFormItem(password, "Password");
-        layoutWithBinder.addFormItem(confirmPassword, "Conform password");
-        layoutWithBinder.addFormItem(birthDate, "Birthdate");
+        layoutWithBinder.addFormItem(nameField, "Name");
+        layoutWithBinder.addFormItem(loginField, "Login");
+        layoutWithBinder.addFormItem(passwordField, "Password");
+        layoutWithBinder.addFormItem(confirmPasswordField, "Conform password");
+        layoutWithBinder.addFormItem(birthDatePicker, "Birthdate");
 
         HorizontalLayout buttonsLine = new HorizontalLayout();
         buttonsLine.add(confirmButton, resetButton, cancelButton);
         confirmButton.getStyle().set("marginRight", "10px");
         resetButton.getStyle().set("marginRight", "10px");
 
-        name.setRequiredIndicatorVisible(true);
-        loginName.setRequiredIndicatorVisible(true);
-        password.setRequiredIndicatorVisible(true);
-        confirmPassword.setRequiredIndicatorVisible(true);
-        birthDate.setRequiredIndicatorVisible(true);
+        nameField.setRequiredIndicatorVisible(true);
+        loginField.setRequiredIndicatorVisible(true);
+        passwordField.setRequiredIndicatorVisible(true);
+        confirmPasswordField.setRequiredIndicatorVisible(true);
+        birthDatePicker.setRequiredIndicatorVisible(true);
 
         // user input validation
-        binder.forField(name).withValidator(new StringLengthValidator("Name is mandatory", 1, null))
+        binder.forField(nameField).withValidator(new StringLengthValidator("Name is mandatory", 1, null))
                 .bind(Person::getName, Person::setName);
 
-        binder.forField(loginName).withValidator(new StringLengthValidator("Login is mandatory", 1, null))
+        binder.forField(loginField).withValidator(new StringLengthValidator("Login is mandatory", 1, null))
                 .bind(Person::getLogin, Person::setLogin);
 
-        binder.forField(password).withValidator(new StringLengthValidator("Password is mandatory", 1, null))
+        binder.forField(passwordField).withValidator(new StringLengthValidator("Password is mandatory", 1, null))
                 .bind(Person::getPassword, Person::setPassword);
-        binder.forField(confirmPassword)
+        binder.forField(confirmPasswordField)
                 .withValidator(new StringLengthValidator("Password confirmation is mandatory", 1, null))
-                .withValidator(confirm -> confirm.equals(password.getValue()),
+                .withValidator(confirm -> confirm.equals(passwordField.getValue()),
                         "Password doesn't match its confirmation")
                 .bind(Person::getPassword, Person::setPassword);
 
-        Binder.Binding<Person, String> confirmationBinding = binder.forField(confirmPassword)
-                .withValidator(confirm -> confirm.equals(password.getValue()),
+        Binder.Binding<Person, String> confirmationBinding = binder.forField(confirmPasswordField)
+                .withValidator(confirm -> confirm.equals(passwordField.getValue()),
                         "Password doesn't match its confirmation")
                 .bind(Person::getPassword, Person::setPassword);
-        password.addValueChangeListener(event -> confirmationBinding.validate());
+        passwordField.addValueChangeListener(event -> confirmationBinding.validate());
 
-        binder.forField(birthDate).withValidator(bd -> bd != null, "Birthdate is mandatory")
+        binder.forField(birthDatePicker).withValidator(bd -> bd != null, "Birthdate is mandatory")
                 .withValidator(
                         new DateRangeValidator("Birthdate out of sense", LocalDate.ofYearDay(1, 1), LocalDate.now()))
                 .bind(Person::getBirthDate, Person::setBirthDate);
