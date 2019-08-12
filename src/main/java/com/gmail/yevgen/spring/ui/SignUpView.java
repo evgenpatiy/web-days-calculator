@@ -1,8 +1,10 @@
 package com.gmail.yevgen.spring.ui;
 
 import java.time.LocalDate;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -33,6 +35,7 @@ import com.vaadin.flow.data.validator.DateRangeValidator;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 
@@ -143,7 +146,9 @@ public class SignUpView extends VerticalLayout {
                             3000, Position.MIDDLE);
                 } else {
                     savePerson(person);
-                    UI.getCurrent().navigate(DaysView.class);
+                    UI.getCurrent().navigate("dayspanel",
+                            QueryParameters.simple(Stream.of(new SimpleEntry<>("user", person.getLogin()))
+                                    .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue))));
                 }
             } else {
                 BinderValidationStatus<Person> validate = binder.validate();
