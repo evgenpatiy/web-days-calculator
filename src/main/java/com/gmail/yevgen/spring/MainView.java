@@ -28,16 +28,13 @@ public class MainView extends VerticalLayout {
     private static final long serialVersionUID = 7657167124498205619L;
 
     public MainView() {
-        Button signInButton = new Button(" Sign In", e -> showLoginForm().setOpened(true));
-        Icon signInIcon = VaadinIcon.SIGN_IN.create();
+        Button signInButton = new Button(" Sign In", VaadinIcon.SIGN_IN.create(), e -> showLoginForm().setOpened(true));
         signInButton.setMaxWidth("10em");
-        signInButton.setIcon(signInIcon);
         signInButton.getStyle().set("marginRight", "10px");
 
-        Button signUpButton = new Button(" Sign Up", e -> UI.getCurrent().navigate(SignUpView.class));
-        Icon signUpIcon = VaadinIcon.USER.create();
+        Button signUpButton = new Button(" Sign Up", VaadinIcon.USER.create(),
+                e -> UI.getCurrent().navigate(SignUpView.class));
         signUpButton.setMaxWidth("10em");
-        signUpButton.setIcon(signUpIcon);
 
         HorizontalLayout buttonsLine = new HorizontalLayout();
         buttonsLine.add(signInButton, signUpButton);
@@ -71,7 +68,8 @@ public class MainView extends VerticalLayout {
         LoginI18n i18n = LoginI18n.createDefault();
         i18n.setAdditionalInformation("Provide non-empty login and password");
         LoginOverlay login = new LoginOverlay();
-        login.setAction("dayspanel");
+        // login.setAction("dayspanel");
+        login.setError(true);
         login.setForgotPasswordButtonVisible(false);
         login.setTitle(title);
         login.setDescription("How many days you're lived already");

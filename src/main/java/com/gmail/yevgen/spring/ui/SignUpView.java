@@ -14,6 +14,7 @@ import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep.LabelsPosition;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -78,9 +79,9 @@ public class SignUpView extends VerticalLayout {
 
         DatePicker birthDate = new DatePicker();
 
-        Button confirmButton = new Button("Confirm");
-        Button resetButton = new Button("Reset");
-        Button cancelButton = new Button("Cancel");
+        Button confirmButton = new Button("Confirm", VaadinIcon.USER.create());
+        Button resetButton = new Button("Reset", VaadinIcon.WARNING.create());
+        Button cancelButton = new Button("Cancel", VaadinIcon.ARROW_BACKWARD.create());
 
         layoutWithBinder.addFormItem(photo, "");
         layoutWithBinder.addFormItem(upload, "Photo");
