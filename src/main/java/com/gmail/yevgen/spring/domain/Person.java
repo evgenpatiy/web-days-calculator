@@ -26,7 +26,7 @@ public class Person {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private @NonNull String name;
-    private @NonNull String loginName;
+    private @NonNull String login;
     private @NonNull String password;
     private @NonNull LocalDate birthDate;
 }

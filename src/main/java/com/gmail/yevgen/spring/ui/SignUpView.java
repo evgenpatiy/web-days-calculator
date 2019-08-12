@@ -4,8 +4,11 @@ import java.time.LocalDate;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.gmail.yevgen.spring.MainView;
 import com.gmail.yevgen.spring.domain.Person;
+import com.gmail.yevgen.spring.repository.PersonRepository;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -16,6 +19,7 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
@@ -36,14 +40,18 @@ import com.vaadin.flow.server.StreamResource;
 @PageTitle("Days calculator - new user")
 public class SignUpView extends VerticalLayout {
     private static final long serialVersionUID = 2659811876997659447L;
+    private final PersonRepository personRepository;
+    private Person person;
 
-    public SignUpView() {
+    @Autowired
+    public SignUpView(PersonRepository personRepository) {
+        this.personRepository = personRepository;
         FormLayout layoutWithBinder = new FormLayout();
         layoutWithBinder.setResponsiveSteps(new ResponsiveStep("0", 1, LabelsPosition.TOP),
                 new ResponsiveStep("600px", 1, LabelsPosition.ASIDE));
 
         Binder<Person> binder = new Binder<>();
-        Person person = new Person();
+        person = new Person();
 
         Image photo = new Image();
         photo.setSrc("../frontend/img/anon.png");
@@ -107,7 +115,7 @@ public class SignUpView extends VerticalLayout {
                 .bind(Person::getName, Person::setName);
 
         binder.forField(loginName).withValidator(new StringLengthValidator("Login is mandatory", 1, null))
-                .bind(Person::getLoginName, Person::setLoginName);
+                .bind(Person::getLogin, Person::setLogin);
 
         binder.forField(password).withValidator(new StringLengthValidator("Password is mandatory", 1, null))
                 .bind(Person::getPassword, Person::setPassword);
@@ -130,7 +138,13 @@ public class SignUpView extends VerticalLayout {
 
         confirmButton.addClickListener(event -> {
             if (binder.writeBeanIfValid(person)) {
-                UI.getCurrent().navigate(DaysView.class);
+                if (ifPersonWithLoginExists(person)) {
+                    Notification.show("User " + person.getLogin() + " already exists, choose different username please",
+                            3000, Position.MIDDLE);
+                } else {
+                    savePerson(person);
+                    UI.getCurrent().navigate(DaysView.class);
+                }
             } else {
                 BinderValidationStatus<Person> validate = binder.validate();
                 String errorText = validate.getFieldValidationStatuses().stream()
@@ -148,5 +162,13 @@ public class SignUpView extends VerticalLayout {
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
         setAlignItems(Alignment.CENTER);
+    }
+
+    void savePerson(Person p) {
+        personRepository.save(p);
+    }
+
+    boolean ifPersonWithLoginExists(Person p) {
+        return personRepository.findByLogin(p.getLogin()) != null;
     }
 }
