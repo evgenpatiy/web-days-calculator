@@ -57,8 +57,7 @@ public class DaysView extends VerticalLayout implements HasUrlParameter<String> 
     private void showDaysViewPanel(String personLogin) {
         Grid<Person> personGrid = new Grid<>(Person.class);
         personGrid.setColumns("name");
-
-        //personGrid.seti
+        personGrid.setItems(personRepository.findAll());
 
         HorizontalLayout daysViewLayout = new HorizontalLayout();
         FormLayout layoutWithBinder = new FormLayout();
@@ -72,19 +71,19 @@ public class DaysView extends VerticalLayout implements HasUrlParameter<String> 
 
         TextField nameField = new TextField();
         nameField.setPlaceholder(person.getName());
-        //nameField.setReadOnly(true);
+        // nameField.setReadOnly(true);
         nameField.setValueChangeMode(ValueChangeMode.EAGER);
 
         TextField loginField = new TextField();
         loginField.setPlaceholder(person.getLogin());
-        //loginField.setReadOnly(true);
+        // loginField.setReadOnly(true);
         loginField.setValueChangeMode(ValueChangeMode.EAGER);
 
-        //Locale ukrainian = new Locale("uk", "UA");
+        // Locale ukrainian = new Locale("uk", "UA");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
         TextField birthDateField = new TextField();
         birthDateField.setPlaceholder(person.getBirthDate().format(formatter));
-        //birthDateField.setReadOnly(true);
+        // birthDateField.setReadOnly(true);
         birthDateField.setValueChangeMode(ValueChangeMode.EAGER);
 
         Period period = Period.between(person.getBirthDate(), LocalDate.now());
