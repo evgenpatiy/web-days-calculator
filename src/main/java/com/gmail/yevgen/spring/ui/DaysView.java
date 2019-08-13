@@ -12,7 +12,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.gmail.yevgen.spring.domain.Person;
 import com.gmail.yevgen.spring.domain.PersonRepository;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep.LabelsPosition;
@@ -61,7 +64,6 @@ public class DaysView extends VerticalLayout implements HasUrlParameter<String> 
         personGrid.setColumns("name");
         personGrid.setItems(personRepository.findAll());
 
-        HorizontalLayout daysViewLayout = new HorizontalLayout();
         FormLayout layoutWithBinder = new FormLayout();
         layoutWithBinder.setResponsiveSteps(new ResponsiveStep("0", 1, LabelsPosition.TOP),
                 new ResponsiveStep("600px", 1, LabelsPosition.ASIDE));
@@ -109,7 +111,26 @@ public class DaysView extends VerticalLayout implements HasUrlParameter<String> 
         layoutWithBinder.addFormItem(birthDateField, "Birtdate");
         layoutWithBinder.addFormItem(daysLivedLabel, "");
 
-        daysViewLayout.add(layoutWithBinder);
-        add(daysViewLayout, personGrid);
+        Dialog dialog = new Dialog();
+        dialog.setCloseOnEsc(false);
+        dialog.setCloseOnOutsideClick(false);
+
+        Button logoutButton = new Button("Logout", e -> {
+            UI.getCurrent().navigate(MainView.class);
+            dialog.close();
+        });
+        dialog.add(layoutWithBinder);
+
+        HorizontalLayout dialogButtonsBar = new HorizontalLayout(logoutButton);
+        dialog.add(dialogButtonsBar);
+        dialog.setOpened(true);
+
+        //HorizontalLayout buttonsBar = new HorizontalLayout(editButton, deleteButton, logoutButton);
+        //layoutWithBinder.add(buttonsBar);
+
+        //add(layoutWithBinder);
+        setSizeFull();
+        setJustifyContentMode(JustifyContentMode.CENTER);
+        setAlignItems(Alignment.CENTER);
     }
 }
