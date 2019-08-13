@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 
+import org.hibernate.annotations.Type;
 import org.springframework.stereotype.Service;
 
 import lombok.Getter;
@@ -17,6 +18,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @NoArgsConstructor
 @RequiredArgsConstructor
@@ -24,6 +26,7 @@ import lombok.Setter;
 @Setter
 @Service
 @Entity
+@ToString
 public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -33,6 +36,7 @@ public class Person {
     private @NonNull String password;
     private @NonNull LocalDate birthDate;
     @Lob
+    @Type(type = "org.hibernate.type.ImageType")
     @Basic(fetch = FetchType.LAZY)
     private byte[] profilePicture;
 }

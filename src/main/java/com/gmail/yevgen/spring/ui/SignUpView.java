@@ -1,10 +1,16 @@
 package com.gmail.yevgen.spring.ui;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -40,6 +46,8 @@ import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 
+import net.coobird.thumbnailator.Thumbnails;
+
 @Route("signup")
 @PageTitle("Days calculator - new user")
 public class SignUpView extends VerticalLayout {
@@ -66,18 +74,27 @@ public class SignUpView extends VerticalLayout {
         MemoryBuffer buffer = new MemoryBuffer();
         Upload upload = new Upload(buffer);
         Span dropLabel = new Span("drag photo here");
+
         upload.setUploadButton(new Button("Upload"));
         upload.setDropLabel(dropLabel);
         upload.setAcceptedFileTypes("image/jpeg", "image/png", "image/gif");
         upload.addSucceededListener(event -> {
-            StreamResource sr = new StreamResource("", () -> {
-                return buffer.getInputStream();
-            });
-            if (sr != null) {
-                sr.setContentType("image/png");
-                photo.setSrc(sr);
-                photo.setWidth("128px");
-                photo.setHeight("128px");
+            try {
+                BufferedImage inputImage = Thumbnails.of(buffer.getInputStream()).size(128, 128).asBufferedImage();
+                ByteArrayOutputStream pngContent = new ByteArrayOutputStream();
+                ImageIO.write(inputImage, "png", pngContent);
+                person.setProfilePicture(pngContent.toByteArray());
+
+                StreamResource sr = new StreamResource("", () -> {
+                    return new ByteArrayInputStream(pngContent.toByteArray());
+                });
+                if (sr != null) {
+                    sr.setContentType("image/png");
+                    photo.setSrc(sr);
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
 
