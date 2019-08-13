@@ -1,5 +1,6 @@
 package com.gmail.yevgen.spring.ui;
 
+import java.io.ByteArrayInputStream;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
@@ -29,6 +30,7 @@ import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.StreamResource;
 
 @Route("dayspanel")
 @PageTitle("Days calculator - user panel")
@@ -67,7 +69,16 @@ public class DaysView extends VerticalLayout implements HasUrlParameter<String> 
         Person person = personRepository.findByLogin(personLogin);
 
         Image photo = new Image();
-        photo.setSrc("../frontend/img/anon.png");
+
+        if (person.getProfilePicture() == null) {
+            photo.setSrc("../frontend/img/anon.png");
+        } else {
+            StreamResource sr = new StreamResource("", () -> {
+                return new ByteArrayInputStream(person.getProfilePicture());
+            });
+            sr.setContentType("image/png");
+            photo.setSrc(sr);
+        }
 
         TextField nameField = new TextField();
         nameField.setPlaceholder(person.getName());

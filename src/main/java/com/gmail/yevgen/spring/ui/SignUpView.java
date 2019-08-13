@@ -83,14 +83,13 @@ public class SignUpView extends VerticalLayout {
                 BufferedImage inputImage = Thumbnails.of(buffer.getInputStream()).size(128, 128).asBufferedImage();
                 ByteArrayOutputStream pngContent = new ByteArrayOutputStream();
                 ImageIO.write(inputImage, "png", pngContent);
-                person.setProfilePicture(pngContent.toByteArray());
-
                 StreamResource sr = new StreamResource("", () -> {
                     return new ByteArrayInputStream(pngContent.toByteArray());
                 });
                 if (sr != null) {
                     sr.setContentType("image/png");
                     photo.setSrc(sr);
+                    person.setProfilePicture(pngContent.toByteArray());
                 }
 
             } catch (IOException e) {
