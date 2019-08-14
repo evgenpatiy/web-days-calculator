@@ -1,6 +1,6 @@
 html {
-    //background: linear-gradient(145deg, #484962 30%, #d06b41 100%);
-    background: linear-gradient(145deg, white 30%, #0099ff 100%);
+    background: url("frontend/img/bottom.png") no-repeat center bottom,
+        linear-gradient(145deg, #484962 30%, #d06b41 100%);
 }
 
 .errorNotification {
@@ -9,13 +9,80 @@ html {
     font-weight: bold;
 }
 
+.nameLabel {
+    font-weight: bold;
+}
+
 .loginTitle {
     text-align: center;
-    color: var(--lumo-base-color);
+    color: white;
 }
 
 .loginIcon {
     width: 30px;
     height: 30 px;
     top: -4px;
+}
+
+.line {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 0;
+}
+
+.timesDiv {
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.timesDiv:first-of-type {
+    animation: appear 7s infinite;
+    animation-iteration-count: 1
+}
+
+.titleMessage {
+    font-size:32px;
+    text-align: center;
+    color: white;
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.titleMessage:first-of-type {
+    animation: showup 7s infinite;
+    animation-iteration-count: 1
+}
+
+.titleMessage:last-of-type {
+    width: 0px;
+    animation: reveal 7s infinite;
+    animation-iteration-count: 1
+}
+
+@keyframes appear {
+    0% {opacity:0;}
+    20% {opacity:1;}
+    80% {opacity:1;}
+    100% {opacity:1;}
+}
+
+
+@keyframes showup {
+    0% {opacity:0;}
+    20% {opacity:1;}
+    80% {opacity:1;}
+    100% {opacity:0;}
+}
+
+@keyframes reveal {
+    0% {opacity:0;width:0px;}
+    20% {opacity:1;width:0px;}
+    30% {width:355px;}
+    80% {opacity:1;}
+    100% {opacity:0;width:355px;}
 }

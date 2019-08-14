@@ -15,6 +15,7 @@ import javax.imageio.ImageIO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.gmail.yevgen.spring.MainView;
 import com.gmail.yevgen.spring.domain.Person;
 import com.gmail.yevgen.spring.domain.PersonRepository;
 import com.vaadin.flow.component.UI;

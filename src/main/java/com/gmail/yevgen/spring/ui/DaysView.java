@@ -4,28 +4,30 @@ import java.io.ByteArrayInputStream;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.gmail.yevgen.spring.MainView;
 import com.gmail.yevgen.spring.domain.Person;
 import com.gmail.yevgen.spring.domain.PersonRepository;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
+import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
-import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep.LabelsPosition;
-import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.Location;
@@ -41,12 +43,10 @@ import com.vaadin.flow.server.StreamResource;
 public class DaysView extends VerticalLayout implements HasUrlParameter<String> {
     private static final long serialVersionUID = -3227439462230694954L;
     private PersonRepository personRepository;
-    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public DaysView(PersonRepository personRepository, PasswordEncoder passwordEncoder) {
+    public DaysView(PersonRepository personRepository) {
         this.personRepository = personRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -60,15 +60,15 @@ public class DaysView extends VerticalLayout implements HasUrlParameter<String> 
     }
 
     private void showDaysViewPanel(String personLogin) {
-        Grid<Person> personGrid = new Grid<>(Person.class);
-        personGrid.setColumns("name");
-        personGrid.setItems(personRepository.findAll());
-
-        FormLayout layoutWithBinder = new FormLayout();
-        layoutWithBinder.setResponsiveSteps(new ResponsiveStep("0", 1, LabelsPosition.TOP),
-                new ResponsiveStep("600px", 1, LabelsPosition.ASIDE));
-
         Person person = personRepository.findByLogin(personLogin);
+        VerticalLayout mainLayout = new VerticalLayout();
+        mainLayout.setJustifyContentMode(JustifyContentMode.CENTER);
+        mainLayout.setAlignItems(Alignment.CENTER);
+
+        Period period = Period.between(person.getBirthDate(), LocalDate.now());
+
+        H2 nameLabel = new H2(person.getName());
+        nameLabel.addClassName("nameLabel");
 
         Image photo = new Image();
 
@@ -82,53 +82,39 @@ public class DaysView extends VerticalLayout implements HasUrlParameter<String> 
             photo.setSrc(sr);
         }
 
-        TextField nameField = new TextField();
-        nameField.setPlaceholder(person.getName());
-        // nameField.setReadOnly(true);
-        nameField.setValueChangeMode(ValueChangeMode.EAGER);
-
-        TextField loginField = new TextField();
-        loginField.setPlaceholder(person.getLogin());
-        // loginField.setReadOnly(true);
-        loginField.setValueChangeMode(ValueChangeMode.EAGER);
-
-        // Locale ukrainian = new Locale("uk", "UA");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
-        TextField birthDateField = new TextField();
-        birthDateField.setPlaceholder(person.getBirthDate().format(formatter));
-        // birthDateField.setReadOnly(true);
-        birthDateField.setValueChangeMode(ValueChangeMode.EAGER);
+        String birthDateText = "was born at " + person.getBirthDate().format(formatter);
+        Label birthDateLabel = new Label(birthDateText);
+        birthDateLabel.addClassName("line");
 
-        Period period = Period.between(person.getBirthDate(), LocalDate.now());
+        H3 totalDays = new H3("Total days: " + ChronoUnit.DAYS.between(person.getBirthDate(), LocalDate.now()));
+        totalDays.addClassName("timesDiv");
+        Div yearsDiv = new Div(new Span(period.getYears() + " years"));
+        Div monthsDiv = new Div(new Text(period.getMonths() + " months"));
+        Div daysDiv = new Div(new Text(period.getDays() + " days"));
 
-        Label daysLivedLabel = new Label();
-        daysLivedLabel.setText(period.getYears() + " years " + period.getMonths() + " months " + period.getDays()
-                + " days behind your back! Keep going...");
+        Details periodDetails = new Details();
+        periodDetails.setSummaryText("Behind my back:");
+        periodDetails.addContent(yearsDiv, monthsDiv, daysDiv, totalDays);
 
-        layoutWithBinder.addFormItem(photo, "");
-        layoutWithBinder.addFormItem(nameField, "Name");
-        layoutWithBinder.addFormItem(loginField, "Login");
-        layoutWithBinder.addFormItem(birthDateField, "Birtdate");
-        layoutWithBinder.addFormItem(daysLivedLabel, "");
+        mainLayout.add(nameLabel, photo, birthDateLabel, periodDetails);
 
         Dialog dialog = new Dialog();
         dialog.setCloseOnEsc(false);
         dialog.setCloseOnOutsideClick(false);
 
-        Button logoutButton = new Button("Logout", e -> {
+        Button editButton = new Button(" Edit", VaadinIcon.EDIT.create());
+
+        Button deleteButton = new Button(" Delete", VaadinIcon.CLOSE_CIRCLE.create());
+
+        Button logoutButton = new Button(" Logout", VaadinIcon.SIGN_OUT.create(), e -> {
             UI.getCurrent().navigate(MainView.class);
             dialog.close();
         });
-        dialog.add(layoutWithBinder);
-
-        HorizontalLayout dialogButtonsBar = new HorizontalLayout(logoutButton);
-        dialog.add(dialogButtonsBar);
+        HorizontalLayout dialogButtonsBar = new HorizontalLayout(editButton, deleteButton, logoutButton);
+        dialog.add(mainLayout, dialogButtonsBar);
         dialog.setOpened(true);
 
-        //HorizontalLayout buttonsBar = new HorizontalLayout(editButton, deleteButton, logoutButton);
-        //layoutWithBinder.add(buttonsBar);
-
-        //add(layoutWithBinder);
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
         setAlignItems(Alignment.CENTER);

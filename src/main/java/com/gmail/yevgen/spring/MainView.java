@@ -1,4 +1,4 @@
-package com.gmail.yevgen.spring.ui;
+package com.gmail.yevgen.spring;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.stream.Collectors;
@@ -9,6 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.gmail.yevgen.spring.domain.Person;
 import com.gmail.yevgen.spring.domain.PersonRepository;
+import com.gmail.yevgen.spring.ui.SignUpView;
+import com.vaadin.flow.component.HtmlComponent;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -31,7 +33,7 @@ import com.vaadin.flow.server.PWA;
 
 @PageTitle("Days calculator")
 @StyleSheet("../frontend/css/style.css")
-@Route("")
+@Route
 @PWA(name = "Web days calculator", shortName = "dayscalc", iconPath = "../frontend/img/logo.png")
 public class MainView extends VerticalLayout {
     private static final long serialVersionUID = 7657167124498205619L;
@@ -54,8 +56,13 @@ public class MainView extends VerticalLayout {
         HorizontalLayout buttonsLine = new HorizontalLayout();
         buttonsLine.add(signInButton, signUpButton);
 
-        Label messageLabel = new Label("Don't waste your time");
-        add(buttonsLine, messageLabel);
+        HtmlComponent br = new HtmlComponent("br");
+        Div titleMessage = new Div();
+        titleMessage.addClassName("titleMessage");
+        titleMessage.add(new Label("One of these days"), br);
+        titleMessage.add(new Label("Pink Floyd, 1971"));
+
+        add(buttonsLine, titleMessage);
         setSizeFull();
         setAlignItems(Alignment.CENTER);
     }
