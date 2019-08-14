@@ -13,9 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.gmail.yevgen.spring.MainView;
 import com.gmail.yevgen.spring.domain.Person;
 import com.gmail.yevgen.spring.domain.PersonRepository;
-import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.JavaScript;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -39,7 +41,7 @@ import com.vaadin.flow.server.StreamResource;
 
 @Route("dayspanel")
 @PageTitle("Days calculator - user panel")
-@StyleSheet("../frontend/css/style.css")
+@StyleSheet("frontend://css/style.css")
 public class DaysView extends VerticalLayout implements HasUrlParameter<String> {
     private static final long serialVersionUID = -3227439462230694954L;
     private PersonRepository personRepository;
@@ -89,13 +91,15 @@ public class DaysView extends VerticalLayout implements HasUrlParameter<String> 
 
         H3 totalDays = new H3("Total days: " + ChronoUnit.DAYS.between(person.getBirthDate(), LocalDate.now()));
         totalDays.addClassName("timesDiv");
-        Div yearsDiv = new Div(new Span(period.getYears() + " years"));
-        Div monthsDiv = new Div(new Text(period.getMonths() + " months"));
-        Div daysDiv = new Div(new Text(period.getDays() + " days"));
+        Div yearsDiv = new Div(new Span('\uA78F' + " " + period.getYears() + " years"));
+        Div monthsDiv = new Div(new Span('\uA78F' + " " + period.getMonths() + " months"));
+        Div daysDiv = new Div(new Span('\uA78F' + " " + period.getDays() + " days"));
 
         Details periodDetails = new Details();
-        periodDetails.setSummaryText("Behind my back:");
+        periodDetails.setSummaryText("see what behind my back");
         periodDetails.addContent(yearsDiv, monthsDiv, daysDiv, totalDays);
+
+        Cardiogram cardiogram = new Cardiogram();
 
         mainLayout.add(nameLabel, photo, birthDateLabel, periodDetails);
 
@@ -118,5 +122,17 @@ public class DaysView extends VerticalLayout implements HasUrlParameter<String> 
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
         setAlignItems(Alignment.CENTER);
+    }
+
+    @Tag("div")
+    @JavaScript("frontend://js/morda.js")
+    private class Cardiogram extends Component {
+        private static final long serialVersionUID = -3313526561126008876L;
+
+        public Cardiogram() {
+            this.setId("canvas");
+            UI.getCurrent().getPage().executeJavaScript("draw();", this);
+        }
+
     }
 }
