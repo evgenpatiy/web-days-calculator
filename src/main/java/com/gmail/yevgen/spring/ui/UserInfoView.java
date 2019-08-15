@@ -17,11 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.gmail.yevgen.spring.MainView;
 import com.gmail.yevgen.spring.domain.Person;
 import com.gmail.yevgen.spring.domain.PersonRepository;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.dependency.JavaScript;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -153,17 +150,5 @@ public class UserInfoView extends VerticalLayout implements HasUrlParameter<Stri
         HorizontalLayout dialogButtonsBar = new HorizontalLayout(editButton, deleteButton, logoutButton);
         dialog.add(mainLayout, dialogButtonsBar);
         dialog.setOpened(true);
-    }
-
-    @Tag("div")
-    @JavaScript("frontend://js/morda.js")
-    private class Cardiogram extends Component {
-        private static final long serialVersionUID = -3313526561126008876L;
-
-        public Cardiogram() {
-            //this.setId("canvas");
-            //UI.getCurrent().getPage().executeJavaScript("draw();", this);
-        }
-
     }
 }
