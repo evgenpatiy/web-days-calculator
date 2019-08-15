@@ -25,13 +25,11 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
@@ -167,29 +165,29 @@ public class UpdateUserView extends VerticalLayout implements HasUrlParameter<St
         birthDatePicker.setRequiredIndicatorVisible(true);
 
         // user input validation
-        binder.forField(nameField).withValidator(new StringLengthValidator("Name is mandatory", 1, null))
+        binder.forField(nameField).withValidator(new StringLengthValidator("name is mandatory", 1, null))
                 .bind(Person::getName, Person::setName);
 
-        binder.forField(loginField).withValidator(new StringLengthValidator("Login is mandatory", 1, null))
+        binder.forField(loginField).withValidator(new StringLengthValidator("login is mandatory", 1, null))
                 .bind(Person::getLogin, Person::setLogin);
 
-        binder.forField(passwordField).withValidator(new StringLengthValidator("Password is mandatory", 1, null))
+        binder.forField(passwordField).withValidator(new StringLengthValidator("password is mandatory", 1, null))
                 .bind(Person::getPassword, Person::setPassword);
         binder.forField(confirmPasswordField)
-                .withValidator(new StringLengthValidator("Password confirmation is mandatory", 1, null))
+                .withValidator(new StringLengthValidator("password confirmation is mandatory", 1, null))
                 .withValidator(confirm -> confirm.equals(passwordField.getValue()),
-                        "Password doesn't match its confirmation")
+                        "password doesn't match its confirmation")
                 .bind(Person::getPassword, Person::setPassword);
 
         Binder.Binding<Person, String> confirmationBinding = binder.forField(confirmPasswordField)
                 .withValidator(confirm -> confirm.equals(passwordField.getValue()),
-                        "Password doesn't match its confirmation")
+                        "password doesn't match its confirmation")
                 .bind(Person::getPassword, Person::setPassword);
         passwordField.addValueChangeListener(event -> confirmationBinding.validate());
 
-        binder.forField(birthDatePicker).withValidator(bd -> bd != null, "Birthdate is mandatory")
+        binder.forField(birthDatePicker).withValidator(bd -> bd != null, "birthdate is mandatory")
                 .withValidator(
-                        new DateRangeValidator("Birthdate out of sense", LocalDate.ofYearDay(1, 1), LocalDate.now()))
+                        new DateRangeValidator("birthdate out of sense", LocalDate.ofYearDay(1, 1), LocalDate.now()))
                 .bind(Person::getBirthDate, Person::setBirthDate);
 
         Dialog dialog = new Dialog();
@@ -198,22 +196,11 @@ public class UpdateUserView extends VerticalLayout implements HasUrlParameter<St
 
         updateButton.addClickListener(event -> {
             if (binder.writeBeanIfValid(person)) {
-                if (ifPersonWithLoginExists(person)) {
-                    Div content = new Div();
-                    content.addClassName("errorNotification");
-                    content.setText("User " + person.getLogin() + " already exists. Choose different login");
-
-                    Notification wrongLoginNotification = new Notification(content);
-                    wrongLoginNotification.setDuration(3000);
-                    wrongLoginNotification.setPosition(Position.MIDDLE);
-                    wrongLoginNotification.open();
-                } else {
-                    savePerson(person);
-                    dialog.close();
-                    UI.getCurrent().navigate("account",
-                            QueryParameters.simple(Stream.of(new SimpleEntry<>("user", String.valueOf(person.getId())))
-                                    .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue))));
-                }
+                savePerson(person);
+                dialog.close();
+                UI.getCurrent().navigate("account",
+                        QueryParameters.simple(Stream.of(new SimpleEntry<>("user", String.valueOf(person.getId())))
+                                .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue))));
             } else {
                 BinderValidationStatus<Person> validate = binder.validate();
                 String errorText = validate.getFieldValidationStatuses().stream()

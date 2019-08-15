@@ -137,29 +137,29 @@ public class NewUserView extends VerticalLayout {
         birthDatePicker.setRequiredIndicatorVisible(true);
 
         // user input validation
-        binder.forField(nameField).withValidator(new StringLengthValidator("Name is mandatory", 1, null))
+        binder.forField(nameField).withValidator(new StringLengthValidator("name is mandatory", 1, null))
                 .bind(Person::getName, Person::setName);
 
-        binder.forField(loginField).withValidator(new StringLengthValidator("Login is mandatory", 1, null))
+        binder.forField(loginField).withValidator(new StringLengthValidator("login is mandatory", 1, null))
                 .bind(Person::getLogin, Person::setLogin);
 
-        binder.forField(passwordField).withValidator(new StringLengthValidator("Password is mandatory", 1, null))
+        binder.forField(passwordField).withValidator(new StringLengthValidator("password is mandatory", 1, null))
                 .bind(Person::getPassword, Person::setPassword);
         binder.forField(confirmPasswordField)
-                .withValidator(new StringLengthValidator("Password confirmation is mandatory", 1, null))
+                .withValidator(new StringLengthValidator("password confirmation is mandatory", 1, null))
                 .withValidator(confirm -> confirm.equals(passwordField.getValue()),
-                        "Password doesn't match its confirmation")
+                        "password doesn't match its confirmation")
                 .bind(Person::getPassword, Person::setPassword);
 
         Binder.Binding<Person, String> confirmationBinding = binder.forField(confirmPasswordField)
                 .withValidator(confirm -> confirm.equals(passwordField.getValue()),
-                        "Password doesn't match its confirmation")
+                        "password doesn't match its confirmation")
                 .bind(Person::getPassword, Person::setPassword);
         passwordField.addValueChangeListener(event -> confirmationBinding.validate());
 
-        binder.forField(birthDatePicker).withValidator(bd -> bd != null, "Birthdate is mandatory")
+        binder.forField(birthDatePicker).withValidator(bd -> bd != null, "birthdate is mandatory")
                 .withValidator(
-                        new DateRangeValidator("Birthdate out of sense", LocalDate.ofYearDay(1, 1), LocalDate.now()))
+                        new DateRangeValidator("birthdate out of sense", LocalDate.ofYearDay(1, 1), LocalDate.now()))
                 .bind(Person::getBirthDate, Person::setBirthDate);
 
         Dialog dialog = new Dialog();
