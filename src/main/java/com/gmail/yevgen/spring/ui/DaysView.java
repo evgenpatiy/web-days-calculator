@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -39,8 +40,8 @@ import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 
-@Route("dayspanel")
-@PageTitle("Days calculator - user panel")
+@Route("account")
+@PageTitle("View account info")
 @StyleSheet("frontend://css/style.css")
 public class DaysView extends VerticalLayout implements HasUrlParameter<String> {
     private static final long serialVersionUID = -3227439462230694954L;
@@ -57,17 +58,19 @@ public class DaysView extends VerticalLayout implements HasUrlParameter<String> 
         QueryParameters queryParameters = location.getQueryParameters();
 
         Map<String, List<String>> parametersMap = queryParameters.getParameters();
-        String personLogin = parametersMap.get("user").get(0);
-        showDaysViewPanel(personLogin);
+        UUID id = UUID.fromString(parametersMap.get("user").get(0));
+        showDaysViewPanel(id);
     }
 
-    private void showDaysViewPanel(String personLogin) {
-        Person person = personRepository.findByLogin(personLogin);
+    private void showDaysViewPanel(UUID id) {
+        Person person = personRepository.findById(id).get();
         VerticalLayout mainLayout = new VerticalLayout();
         mainLayout.setJustifyContentMode(JustifyContentMode.CENTER);
         mainLayout.setAlignItems(Alignment.CENTER);
 
-        Period period = Period.between(person.getBirthDate(), LocalDate.now());
+        H3 viewDetailsHeader = new H3("View account info");
+        viewDetailsHeader.addClassName("pageHeader");
+        add(viewDetailsHeader);
 
         H2 nameLabel = new H2(person.getName());
         nameLabel.addClassName("nameLabel");
@@ -83,7 +86,6 @@ public class DaysView extends VerticalLayout implements HasUrlParameter<String> 
             sr.setContentType("image/png");
             photo.setSrc(sr);
         }
-
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
         String birthDateText = "was born at " + person.getBirthDate().format(formatter);
         Label birthDateLabel = new Label(birthDateText);
@@ -91,6 +93,7 @@ public class DaysView extends VerticalLayout implements HasUrlParameter<String> 
 
         H3 totalDays = new H3("Total days: " + ChronoUnit.DAYS.between(person.getBirthDate(), LocalDate.now()));
         totalDays.addClassName("timesDiv");
+        Period period = Period.between(person.getBirthDate(), LocalDate.now());
         Div yearsDiv = new Div(new Span('\uA78F' + " " + period.getYears() + " years"));
         Div monthsDiv = new Div(new Span('\uA78F' + " " + period.getMonths() + " months"));
         Div daysDiv = new Div(new Span('\uA78F' + " " + period.getDays() + " days"));
@@ -98,8 +101,6 @@ public class DaysView extends VerticalLayout implements HasUrlParameter<String> 
         Details periodDetails = new Details();
         periodDetails.setSummaryText("see what behind my back");
         periodDetails.addContent(yearsDiv, monthsDiv, daysDiv, totalDays);
-
-        Cardiogram cardiogram = new Cardiogram();
 
         mainLayout.add(nameLabel, photo, birthDateLabel, periodDetails);
 
@@ -118,10 +119,6 @@ public class DaysView extends VerticalLayout implements HasUrlParameter<String> 
         HorizontalLayout dialogButtonsBar = new HorizontalLayout(editButton, deleteButton, logoutButton);
         dialog.add(mainLayout, dialogButtonsBar);
         dialog.setOpened(true);
-
-        setSizeFull();
-        setJustifyContentMode(JustifyContentMode.CENTER);
-        setAlignItems(Alignment.CENTER);
     }
 
     @Tag("div")
@@ -130,8 +127,8 @@ public class DaysView extends VerticalLayout implements HasUrlParameter<String> 
         private static final long serialVersionUID = -3313526561126008876L;
 
         public Cardiogram() {
-            this.setId("canvas");
-            UI.getCurrent().getPage().executeJavaScript("draw();", this);
+            //this.setId("canvas");
+            //UI.getCurrent().getPage().executeJavaScript("draw();", this);
         }
 
     }

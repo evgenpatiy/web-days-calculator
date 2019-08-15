@@ -1,6 +1,7 @@
 package com.gmail.yevgen.spring;
 
 import java.util.AbstractMap.SimpleEntry;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -45,7 +46,7 @@ public class MainView extends VerticalLayout {
         this.personRepository = personRepository;
         this.passwordEncoder = passwordEncoder;
 
-        Button signInButton = new Button(" Sign In", VaadinIcon.SIGN_IN.create(), e -> showLoginForm().setOpened(true));
+        Button signInButton = new Button(" Sign In", VaadinIcon.SIGN_IN.create(), e -> showLoginView().setOpened(true));
         signInButton.setMaxWidth("10em");
         signInButton.getStyle().set("marginRight", "10px");
 
@@ -67,7 +68,7 @@ public class MainView extends VerticalLayout {
         setAlignItems(Alignment.CENTER);
     }
 
-    private final void showWrongLoginNotification(String notificationText) {
+    private final void showErrorNotification(String notificationText) {
         Div content = new Div();
         content.addClassName("errorNotification");
         content.setText(notificationText);
@@ -78,7 +79,7 @@ public class MainView extends VerticalLayout {
         wrongLoginNotification.open();
     }
 
-    private final LoginOverlay showLoginForm() {
+    private final LoginOverlay showLoginView() {
         H2 title = new H2();
         title.addClassName("loginTitle");
 
@@ -98,16 +99,17 @@ public class MainView extends VerticalLayout {
             if (ifPersonWithLoginExists(event.getUsername())) {
                 if (ifPersonWithLoginAndPasswordExists(event.getUsername(), event.getPassword())) {
                     login.close();
-                    UI.getCurrent().navigate("dayspanel",
-                            QueryParameters.simple(Stream.of(new SimpleEntry<>("user", event.getUsername()))
+                    UUID id = personRepository.findByLogin(event.getUsername()).getId();
+                    UI.getCurrent().navigate("account",
+                            QueryParameters.simple(Stream.of(new SimpleEntry<>("user", String.valueOf(id)))
                                     .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue))));
                 } else {
-                    showWrongLoginNotification("Wrong password for user " + event.getUsername());
+                    showErrorNotification("Wrong password for user " + event.getUsername());
                     login.setEnabled(true);
                 }
             } else {
                 login.close();
-                showWrongLoginNotification("User not found, please sign up first");
+                showErrorNotification("User not found, please sign up first");
             }
         });
         return login;

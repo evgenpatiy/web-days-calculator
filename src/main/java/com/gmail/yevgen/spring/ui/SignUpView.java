@@ -21,10 +21,10 @@ import com.gmail.yevgen.spring.domain.PersonRepository;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;
-import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
-import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep.LabelsPosition;
+import com.vaadin.flow.component.dependency.StyleSheet;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -47,10 +47,12 @@ import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 
+import elemental.json.Json;
 import net.coobird.thumbnailator.Thumbnails;
 
 @Route("signup")
-@PageTitle("Days calculator - new user")
+@PageTitle("New user registration")
+@StyleSheet("frontend://css/style.css")
 public class SignUpView extends VerticalLayout {
     private static final long serialVersionUID = 2659811876997659447L;
     private final PersonRepository personRepository;
@@ -61,10 +63,10 @@ public class SignUpView extends VerticalLayout {
     public SignUpView(PersonRepository personRepository, PasswordEncoder passwordEncoder) {
         this.personRepository = personRepository;
         this.passwordEncoder = passwordEncoder;
+        PersonLayout layoutWithBinder = new PersonLayout();
 
-        FormLayout layoutWithBinder = new FormLayout();
-        layoutWithBinder.setResponsiveSteps(new ResponsiveStep("0", 1, LabelsPosition.TOP),
-                new ResponsiveStep("600px", 1, LabelsPosition.ASIDE));
+        H3 newUserHeader = new H3("New user registration");
+        newUserHeader.addClassName("pageHeader");
 
         Binder<Person> binder = new Binder<>();
         person = new Person();
@@ -90,6 +92,8 @@ public class SignUpView extends VerticalLayout {
                 if (sr != null) {
                     sr.setContentType("image/png");
                     photo.setSrc(sr);
+                    photo.setMaxHeight("128px");
+                    photo.setMaxWidth("128px");
                     person.setProfilePicture(pngContent.toByteArray());
                 }
 
@@ -115,16 +119,14 @@ public class SignUpView extends VerticalLayout {
         Button resetButton = new Button("Reset", VaadinIcon.WARNING.create());
         Button cancelButton = new Button("Cancel", VaadinIcon.ARROW_BACKWARD.create());
 
-        layoutWithBinder.addFormItem(photo, "");
-        layoutWithBinder.addFormItem(upload, "Photo");
-        layoutWithBinder.addFormItem(nameField, "Name");
-        layoutWithBinder.addFormItem(loginField, "Login");
-        layoutWithBinder.addFormItem(passwordField, "Password");
-        layoutWithBinder.addFormItem(confirmPasswordField, "Conform password");
-        layoutWithBinder.addFormItem(birthDatePicker, "Birthdate");
+        layoutWithBinder.addPersonItem("Name:", nameField);
+        layoutWithBinder.addPersonItem("Login:", loginField);
+        layoutWithBinder.addPersonItem("Password:", passwordField);
+        layoutWithBinder.addPersonItem("Confirm:", confirmPasswordField);
+        layoutWithBinder.addPersonItem("Birthdate:", birthDatePicker);
 
-        HorizontalLayout buttonsLine = new HorizontalLayout();
-        buttonsLine.add(confirmButton, resetButton, cancelButton);
+        HorizontalLayout dialogButtonsBar = new HorizontalLayout();
+        dialogButtonsBar.add(confirmButton, resetButton, cancelButton);
         confirmButton.getStyle().set("marginRight", "10px");
         resetButton.getStyle().set("marginRight", "10px");
 
@@ -160,6 +162,10 @@ public class SignUpView extends VerticalLayout {
                         new DateRangeValidator("Birthdate out of sense", LocalDate.ofYearDay(1, 1), LocalDate.now()))
                 .bind(Person::getBirthDate, Person::setBirthDate);
 
+        Dialog dialog = new Dialog();
+        dialog.setCloseOnEsc(false);
+        dialog.setCloseOnOutsideClick(false);
+
         confirmButton.addClickListener(event -> {
             if (binder.writeBeanIfValid(person)) {
                 if (ifPersonWithLoginExists(person)) {
@@ -173,8 +179,9 @@ public class SignUpView extends VerticalLayout {
                     wrongLoginNotification.open();
                 } else {
                     savePerson(person);
-                    UI.getCurrent().navigate("dayspanel",
-                            QueryParameters.simple(Stream.of(new SimpleEntry<>("user", person.getLogin()))
+                    dialog.close();
+                    UI.getCurrent().navigate("account",
+                            QueryParameters.simple(Stream.of(new SimpleEntry<>("user", String.valueOf(person.getId())))
                                     .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue))));
                 }
             } else {
@@ -186,14 +193,23 @@ public class SignUpView extends VerticalLayout {
             }
         });
         resetButton.addClickListener(event -> {
+            photo.setSrc("../frontend/img/anon.png");
+            upload.getElement().setPropertyJson("files", Json.createArray());
+            person.setProfilePicture(null);
             binder.readBean(null);
         });
-        cancelButton.addClickListener(event -> UI.getCurrent().navigate(MainView.class));
+        cancelButton.addClickListener(event -> {
+            dialog.close();
+            UI.getCurrent().navigate(MainView.class);
+        });
+        add(newUserHeader);
 
-        add(layoutWithBinder, buttonsLine);
-        setSizeFull();
-        setJustifyContentMode(JustifyContentMode.CENTER);
-        setAlignItems(Alignment.CENTER);
+        VerticalLayout mainLayout = new VerticalLayout(new HorizontalLayout(photo, upload), layoutWithBinder,
+                dialogButtonsBar);
+        mainLayout.setJustifyContentMode(JustifyContentMode.CENTER);
+        mainLayout.setAlignItems(Alignment.CENTER);
+        dialog.add(mainLayout);
+        dialog.setOpened(true);
     }
 
     void savePerson(Person p) {
