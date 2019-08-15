@@ -12,8 +12,8 @@ import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 
+import org.jasypt.encryption.pbe.PBEStringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.gmail.yevgen.spring.MainView;
 import com.gmail.yevgen.spring.domain.Person;
@@ -53,16 +53,16 @@ import net.coobird.thumbnailator.Thumbnails;
 @Route("signup")
 @PageTitle("New user registration")
 @StyleSheet("frontend://css/style.css")
-public class SignUpView extends VerticalLayout {
+public class NewUserView extends VerticalLayout {
     private static final long serialVersionUID = 2659811876997659447L;
     private final PersonRepository personRepository;
-    private PasswordEncoder passwordEncoder;
+    private PBEStringEncryptor passwordEncryptor;
     private Person person;
 
     @Autowired
-    public SignUpView(PersonRepository personRepository, PasswordEncoder passwordEncoder) {
+    public NewUserView(PersonRepository personRepository, PBEStringEncryptor passwordEncryptor) {
         this.personRepository = personRepository;
-        this.passwordEncoder = passwordEncoder;
+        this.passwordEncryptor = passwordEncryptor;
         PersonLayout layoutWithBinder = new PersonLayout();
 
         H3 newUserHeader = new H3("New user registration");
@@ -111,13 +111,13 @@ public class SignUpView extends VerticalLayout {
         PasswordField passwordField = new PasswordField();
         passwordField.setValueChangeMode(ValueChangeMode.EAGER);
         PasswordField confirmPasswordField = new PasswordField();
-        passwordField.setValueChangeMode(ValueChangeMode.EAGER);
+        confirmPasswordField.setValueChangeMode(ValueChangeMode.EAGER);
 
         DatePicker birthDatePicker = new DatePicker();
 
-        Button confirmButton = new Button("Confirm", VaadinIcon.USER.create());
-        Button resetButton = new Button("Reset", VaadinIcon.WARNING.create());
-        Button cancelButton = new Button("Cancel", VaadinIcon.ARROW_BACKWARD.create());
+        Button confirmButton = new Button(" Confirm", VaadinIcon.USER.create());
+        Button resetButton = new Button(" Reset", VaadinIcon.WARNING.create());
+        Button cancelButton = new Button(" Cancel", VaadinIcon.ARROW_BACKWARD.create());
 
         layoutWithBinder.addPersonItem("Name:", nameField);
         layoutWithBinder.addPersonItem("Login:", loginField);
@@ -213,7 +213,7 @@ public class SignUpView extends VerticalLayout {
     }
 
     void savePerson(Person p) {
-        p.setPassword(passwordEncoder.encode(p.getPassword()));
+        p.setPassword(passwordEncryptor.encrypt(p.getPassword()));
         personRepository.save(p);
     }
 

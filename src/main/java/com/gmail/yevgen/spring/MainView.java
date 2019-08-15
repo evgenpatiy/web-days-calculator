@@ -5,12 +5,12 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.jasypt.encryption.pbe.PBEStringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.gmail.yevgen.spring.domain.Person;
 import com.gmail.yevgen.spring.domain.PersonRepository;
-import com.gmail.yevgen.spring.ui.SignUpView;
+import com.gmail.yevgen.spring.ui.NewUserView;
 import com.vaadin.flow.component.HtmlComponent;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
@@ -35,23 +35,23 @@ import com.vaadin.flow.server.PWA;
 @PageTitle("Days calculator")
 @StyleSheet("frontend://css/style.css")
 @Route("")
-@PWA(name = "Web days calculator", shortName = "daysCalc", iconPath = "frontend://img/logo.png")
+@PWA(name = "Web days calculator", shortName = "daysCalc", iconPath = "../frontend/img/logo.png")
 public class MainView extends VerticalLayout {
     private static final long serialVersionUID = 7657167124498205619L;
     private PersonRepository personRepository;
-    private PasswordEncoder passwordEncoder;
+    private PBEStringEncryptor passwordEncryptor;
 
     @Autowired
-    public MainView(PersonRepository personRepository, PasswordEncoder passwordEncoder) {
+    public MainView(PersonRepository personRepository, PBEStringEncryptor passwordEncryptor) {
         this.personRepository = personRepository;
-        this.passwordEncoder = passwordEncoder;
+        this.passwordEncryptor = passwordEncryptor;
 
         Button signInButton = new Button(" Sign In", VaadinIcon.SIGN_IN.create(), e -> showLoginView().setOpened(true));
         signInButton.setMaxWidth("10em");
         signInButton.getStyle().set("marginRight", "10px");
 
         Button signUpButton = new Button(" Sign Up", VaadinIcon.USER.create(),
-                event -> UI.getCurrent().navigate(SignUpView.class));
+                event -> UI.getCurrent().navigate(NewUserView.class));
         signUpButton.setMaxWidth("10em");
 
         HorizontalLayout buttonsLine = new HorizontalLayout();
@@ -121,6 +121,6 @@ public class MainView extends VerticalLayout {
 
     boolean ifPersonWithLoginAndPasswordExists(String login, String password) {
         Person p = personRepository.findByLogin(login);
-        return p != null && passwordEncoder.matches(password, p.getPassword());
+        return p != null && password.equals(passwordEncryptor.decrypt(p.getPassword()));
     }
 }

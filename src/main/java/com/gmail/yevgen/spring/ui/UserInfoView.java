@@ -5,9 +5,12 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -29,6 +32,7 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEvent;
@@ -43,12 +47,12 @@ import com.vaadin.flow.server.StreamResource;
 @Route("account")
 @PageTitle("View account info")
 @StyleSheet("frontend://css/style.css")
-public class DaysView extends VerticalLayout implements HasUrlParameter<String> {
+public class UserInfoView extends VerticalLayout implements HasUrlParameter<String> {
     private static final long serialVersionUID = -3227439462230694954L;
     private PersonRepository personRepository;
 
     @Autowired
-    public DaysView(PersonRepository personRepository) {
+    public UserInfoView(PersonRepository personRepository) {
         this.personRepository = personRepository;
     }
 
@@ -108,13 +112,43 @@ public class DaysView extends VerticalLayout implements HasUrlParameter<String> 
         dialog.setCloseOnEsc(false);
         dialog.setCloseOnOutsideClick(false);
 
-        Button editButton = new Button(" Edit", VaadinIcon.EDIT.create());
+        Button editButton = new Button(" Edit", VaadinIcon.EDIT.create(), e -> {
+            dialog.close();
+            UI.getCurrent().navigate("update",
+                    QueryParameters.simple(Stream.of(new SimpleEntry<>("user", String.valueOf(person.getId())))
+                            .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue))));
+        });
 
-        Button deleteButton = new Button(" Delete", VaadinIcon.CLOSE_CIRCLE.create());
+        Button deleteButton = new Button(" Delete", VaadinIcon.CLOSE_CIRCLE.create(), e -> {
+            Dialog deleteAccountDialog = new Dialog();
+            deleteAccountDialog.setCloseOnEsc(true);
+            deleteAccountDialog.setCloseOnOutsideClick(true);
+
+            Button confirmDeleteButton = new Button(" Delete", VaadinIcon.CLOSE_CIRCLE.create(), evt -> {
+                deleteAccountDialog.close();
+                dialog.close();
+                personRepository.delete(person);
+                Notification.show("Account of " + person.getName() + " deleted");
+                UI.getCurrent().navigate(MainView.class);
+            });
+            Button cancelDeleteButton = new Button(" Let me stay", VaadinIcon.USER.create(), evt -> {
+                deleteAccountDialog.close();
+            });
+
+            HorizontalLayout deleteDialogButtons = new HorizontalLayout(confirmDeleteButton, cancelDeleteButton);
+            H3 attentionDeleteMessage = new H3("Attention! You're about to delete your account!");
+            attentionDeleteMessage.addClassName("errorNotification");
+            VerticalLayout deleteDialogLayout = new VerticalLayout(attentionDeleteMessage, deleteDialogButtons);
+            deleteDialogLayout.setJustifyContentMode(JustifyContentMode.CENTER);
+            deleteDialogLayout.setAlignItems(Alignment.CENTER);
+
+            deleteAccountDialog.add(deleteDialogLayout);
+            deleteAccountDialog.setOpened(true);
+        });
 
         Button logoutButton = new Button(" Logout", VaadinIcon.SIGN_OUT.create(), e -> {
-            UI.getCurrent().navigate(MainView.class);
             dialog.close();
+            UI.getCurrent().navigate(MainView.class);
         });
         HorizontalLayout dialogButtonsBar = new HorizontalLayout(editButton, deleteButton, logoutButton);
         dialog.add(mainLayout, dialogButtonsBar);
