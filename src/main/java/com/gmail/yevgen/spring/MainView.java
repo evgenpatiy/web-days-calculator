@@ -122,7 +122,7 @@ public class MainView extends VerticalLayout {
     }
 
     boolean ifPersonWithLoginExists(String login) {
-        return personRepository.findByLogin(login) != null;
+        return personRepository.findByLogin(login.toLowerCase()) != null;
     }
 
     boolean ifPersonWithLoginAndPasswordExists(String login, String password) {

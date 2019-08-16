@@ -213,6 +213,7 @@ public class NewUserView extends VerticalLayout {
 
     void savePerson(Person p) {
         p.setPassword(passwordEncryptor.encrypt(p.getPassword()));
+        p.setLogin(p.getLogin().toLowerCase());
         personRepository.save(p);
     }
 
