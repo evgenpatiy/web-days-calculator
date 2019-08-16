@@ -25,7 +25,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.1.4.RELEASE</version>
+		<version>2.1.7.RELEASE</version>
 	</parent>
 
 	<pluginRepositories>
@@ -95,13 +95,11 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- jpa, crud repository -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 
-		<!-- PostgreSQL -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
@@ -173,15 +171,6 @@
 
 			<build>
 
-				<resources>
-					<resource>
-						<directory>src/main/webapp/frontend</directory>
-						<includes>
-							<include>**/*.png</include>
-						</includes>
-					</resource>
-				</resources>
-
 				<plugins>
 					<plugin>
 						<groupId>com.vaadin</groupId>
@@ -196,6 +185,7 @@
 							</execution>
 						</executions>
 					</plugin>
+                    
 					<plugin>
 						<groupId>org.springframework.boot</groupId>
 						<artifactId>spring-boot-maven-plugin</artifactId>
@@ -210,15 +200,6 @@
 		<profile>
 			<id>integration-tests</id>
 			<build>
-
-				<resources>
-					<resource>
-						<directory>src/main/webapp/frontend</directory>
-						<includes>
-							<include>**/*.png</include>
-						</includes>
-					</resource>
-				</resources>
 
 				<plugins>
 					<plugin>

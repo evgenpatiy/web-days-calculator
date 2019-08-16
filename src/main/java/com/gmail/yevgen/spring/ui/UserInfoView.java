@@ -79,7 +79,7 @@ public class UserInfoView extends VerticalLayout implements HasUrlParameter<Stri
         Image photo = new Image();
 
         if (person.getProfilePicture() == null) {
-            photo.setSrc("../frontend/img/anon.png");
+            photo.setSrc("frontend/img/anon.png");
         } else {
             StreamResource sr = new StreamResource("", () -> {
                 return new ByteArrayInputStream(person.getProfilePicture());

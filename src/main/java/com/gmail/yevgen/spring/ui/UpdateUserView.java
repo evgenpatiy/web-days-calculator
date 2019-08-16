@@ -88,7 +88,7 @@ public class UpdateUserView extends VerticalLayout implements HasUrlParameter<St
 
         Image photo = new Image();
         if (person.getProfilePicture() == null) {
-            photo.setSrc("../frontend/img/anon.png");
+            photo.setSrc("frontend/img/anon.png");
         } else {
             StreamResource sr = new StreamResource("", () -> {
                 return new ByteArrayInputStream(person.getProfilePicture());
@@ -210,7 +210,7 @@ public class UpdateUserView extends VerticalLayout implements HasUrlParameter<St
             }
         });
         resetButton.addClickListener(event -> {
-            photo.setSrc("../frontend/img/anon.png");
+            photo.setSrc("frontend/img/anon.png");
             upload.getElement().setPropertyJson("files", Json.createArray());
             person.setProfilePicture(null);
             binder.readBean(null);

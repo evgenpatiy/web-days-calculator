@@ -72,7 +72,7 @@ public class NewUserView extends VerticalLayout {
         person = new Person();
 
         Image photo = new Image();
-        photo.setSrc("../frontend/img/anon.png");
+        photo.setSrc("frontend/img/anon.png");
 
         MemoryBuffer buffer = new MemoryBuffer();
         Upload upload = new Upload(buffer);
@@ -193,7 +193,7 @@ public class NewUserView extends VerticalLayout {
             }
         });
         resetButton.addClickListener(event -> {
-            photo.setSrc("../frontend/img/anon.png");
+            photo.setSrc("frontend/img/anon.png");
             upload.getElement().setPropertyJson("files", Json.createArray());
             person.setProfilePicture(null);
             binder.readBean(null);
