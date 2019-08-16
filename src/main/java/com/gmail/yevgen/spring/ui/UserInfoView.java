@@ -28,7 +28,6 @@ import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -109,26 +108,26 @@ public class UserInfoView extends VerticalLayout implements HasUrlParameter<Stri
         dialog.setCloseOnEsc(false);
         dialog.setCloseOnOutsideClick(false);
 
-        Button editButton = new Button(" Edit", VaadinIcon.EDIT.create(), e -> {
+        Button editButton = new Button("Edit", e -> {
             dialog.close();
             UI.getCurrent().navigate("update",
                     QueryParameters.simple(Stream.of(new SimpleEntry<>("user", String.valueOf(person.getId())))
                             .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue))));
         });
 
-        Button deleteButton = new Button(" Delete", VaadinIcon.CLOSE_CIRCLE.create(), e -> {
+        Button deleteButton = new Button("Delete", e -> {
             Dialog deleteAccountDialog = new Dialog();
             deleteAccountDialog.setCloseOnEsc(true);
             deleteAccountDialog.setCloseOnOutsideClick(true);
 
-            Button confirmDeleteButton = new Button(" Delete", VaadinIcon.CLOSE_CIRCLE.create(), evt -> {
+            Button confirmDeleteButton = new Button("Delete", evt -> {
                 deleteAccountDialog.close();
                 dialog.close();
                 personRepository.delete(person);
                 Notification.show("Account of " + person.getName() + " deleted");
                 UI.getCurrent().navigate(MainView.class);
             });
-            Button cancelDeleteButton = new Button(" Let me stay", VaadinIcon.USER.create(), evt -> {
+            Button cancelDeleteButton = new Button("Let me stay", evt -> {
                 deleteAccountDialog.close();
             });
 
@@ -143,7 +142,7 @@ public class UserInfoView extends VerticalLayout implements HasUrlParameter<Stri
             deleteAccountDialog.setOpened(true);
         });
 
-        Button logoutButton = new Button(" Logout", VaadinIcon.SIGN_OUT.create(), e -> {
+        Button logoutButton = new Button("Exit", e -> {
             dialog.close();
             UI.getCurrent().navigate(MainView.class);
         });

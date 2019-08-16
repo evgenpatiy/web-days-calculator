@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&subset=cyrillic');
 html {
     background: url("frontend/img/bottom.png") no-repeat center bottom,
         linear-gradient(145deg, #484962 30%, #d06b41 100%);

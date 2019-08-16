@@ -27,8 +27,7 @@ import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.html.NativeButton;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -99,13 +98,14 @@ public class UpdateUserView extends VerticalLayout implements HasUrlParameter<St
 
         MemoryBuffer buffer = new MemoryBuffer();
         Upload upload = new Upload(buffer);
-        Span dropLabel = new Span("drag photo here");
 
-        upload.setUploadButton(new Button("Upload"));
-        upload.setDropLabel(dropLabel);
+        upload.setUploadButton(new NativeButton("Upload photo"));
+        upload.setDropAllowed(false);
+        upload.setMaxFiles(1);
         upload.setAcceptedFileTypes("image/jpeg", "image/png", "image/gif");
         upload.addSucceededListener(event -> {
             try {
+                upload.getElement().setPropertyJson("files", Json.createArray());
                 BufferedImage inputImage = Thumbnails.of(buffer.getInputStream()).size(128, 128).asBufferedImage();
                 ByteArrayOutputStream pngContent = new ByteArrayOutputStream();
                 ImageIO.write(inputImage, "png", pngContent);
@@ -143,9 +143,9 @@ public class UpdateUserView extends VerticalLayout implements HasUrlParameter<St
         DatePicker birthDatePicker = new DatePicker();
         birthDatePicker.setValue(person.getBirthDate());
 
-        Button updateButton = new Button(" Update", VaadinIcon.USER.create());
-        Button resetButton = new Button(" Reset", VaadinIcon.WARNING.create());
-        Button cancelButton = new Button(" Cancel", VaadinIcon.ARROW_BACKWARD.create());
+        Button updateButton = new Button("Update");
+        Button resetButton = new Button("Reset");
+        Button cancelButton = new Button("Cancel");
 
         layoutWithBinder.addPersonItem("Name:", nameField);
         layoutWithBinder.addPersonItem("Login:", loginField);
@@ -223,8 +223,7 @@ public class UpdateUserView extends VerticalLayout implements HasUrlParameter<St
         });
         add(updateUserHeader);
 
-        VerticalLayout mainLayout = new VerticalLayout(new HorizontalLayout(photo, upload), layoutWithBinder,
-                dialogButtonsBar);
+        VerticalLayout mainLayout = new VerticalLayout(photo, upload, layoutWithBinder, dialogButtonsBar);
         mainLayout.setJustifyContentMode(JustifyContentMode.CENTER);
         mainLayout.setAlignItems(Alignment.CENTER);
         dialog.add(mainLayout);

@@ -34,10 +34,13 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.PWA;
+import com.vaadin.flow.theme.Theme;
+import com.vaadin.flow.theme.lumo.Lumo;
 
 @PageTitle("Days calculator")
 @StyleSheet("frontend://css/style.css")
 @Route("")
+@Theme(Lumo.class)
 @PWA(name = "Web days calculator", shortName = "daysCalc", iconPath = "../frontend/img/logo.png")
 public class MainView extends VerticalLayout {
     private static final long serialVersionUID = 7657167124498205619L;
