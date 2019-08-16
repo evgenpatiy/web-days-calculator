@@ -115,7 +115,7 @@ public class MainView extends VerticalLayout {
                 }
             } else {
                 login.close();
-                showErrorNotification("User not found, please sign up first");
+                showErrorNotification("User " + event.getUsername() + " not found, please sign up first");
             }
         });
         return login;
