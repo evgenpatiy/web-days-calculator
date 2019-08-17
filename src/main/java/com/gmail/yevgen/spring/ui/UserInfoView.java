@@ -23,7 +23,6 @@ import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
@@ -72,7 +71,7 @@ public class UserInfoView extends VerticalLayout implements HasUrlParameter<Stri
         viewDetailsHeader.addClassName("pageHeader");
         add(viewDetailsHeader);
 
-        H2 nameLabel = new H2(person.getName());
+        H3 nameLabel = new H3(person.getName());
         nameLabel.addClassName("nameLabel");
 
         Image photo = new Image();

@@ -50,15 +50,15 @@ public class MainView extends VerticalLayout {
         this.passwordEncryptor = passwordEncryptor;
 
         Button signInButton = new Button(" Sign In", VaadinIcon.SIGN_IN.create(), e -> showLoginView().setOpened(true));
-        signInButton.setMaxWidth("10em");
-        signInButton.getStyle().set("marginRight", "10px");
+        signInButton.addClassName("topButton");
 
         Button signUpButton = new Button(" Sign Up", VaadinIcon.USER.create(),
                 event -> UI.getCurrent().navigate(NewUserView.class));
-        signUpButton.setMaxWidth("10em");
+        signUpButton.addClassName("topButton");
 
         HorizontalLayout buttonsLine = new HorizontalLayout();
         buttonsLine.add(signInButton, signUpButton);
+        buttonsLine.addClassName("topButtonsBar");
 
         HtmlComponent br = new HtmlComponent("br");
         Div titleMessage = new Div();
