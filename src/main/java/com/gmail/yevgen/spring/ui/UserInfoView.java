@@ -14,7 +14,6 @@ import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.gmail.yevgen.spring.MainView;
 import com.gmail.yevgen.spring.domain.Person;
 import com.gmail.yevgen.spring.domain.PersonRepository;
 import com.vaadin.flow.component.UI;
@@ -67,15 +66,14 @@ public class UserInfoView extends VerticalLayout implements HasUrlParameter<Stri
         mainLayout.setJustifyContentMode(JustifyContentMode.CENTER);
         mainLayout.setAlignItems(Alignment.CENTER);
 
-        H3 viewDetailsHeader = new H3("View account info");
+        Label viewDetailsHeader = new Label("View account info");
         viewDetailsHeader.addClassName("pageHeader");
         add(viewDetailsHeader);
 
-        H3 nameLabel = new H3(person.getName());
+        Label nameLabel = new Label(person.getName());
         nameLabel.addClassName("nameLabel");
 
         Image photo = new Image();
-
         if (person.getProfilePicture() == null) {
             photo.setSrc("frontend/img/anon.png");
         } else {
@@ -85,17 +83,19 @@ public class UserInfoView extends VerticalLayout implements HasUrlParameter<Stri
             sr.setContentType("image/png");
             photo.setSrc(sr);
         }
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
         String birthDateText = "was born at " + person.getBirthDate().format(formatter);
         Label birthDateLabel = new Label(birthDateText);
         birthDateLabel.addClassName("line");
 
-        H3 totalDays = new H3("Total days: " + ChronoUnit.DAYS.between(person.getBirthDate(), LocalDate.now()));
+        Label totalDays = new Label("Total days: " + ChronoUnit.DAYS.between(person.getBirthDate(), LocalDate.now()));
         totalDays.addClassName("timesDiv");
+
         Period period = Period.between(person.getBirthDate(), LocalDate.now());
-        Div yearsDiv = new Div(new Span('\uA78F' + " " + period.getYears() + " years"));
-        Div monthsDiv = new Div(new Span('\uA78F' + " " + period.getMonths() + " months"));
-        Div daysDiv = new Div(new Span('\uA78F' + " " + period.getDays() + " days"));
+        Div yearsDiv = new Div(new Span(period.getYears() + " years"));
+        Div monthsDiv = new Div(new Span(period.getMonths() + " months"));
+        Div daysDiv = new Div(new Span(period.getDays() + " days"));
 
         Details periodDetails = new Details();
         periodDetails.setSummaryText("see what behind my back");

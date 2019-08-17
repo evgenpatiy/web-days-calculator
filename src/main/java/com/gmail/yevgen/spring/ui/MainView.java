@@ -1,4 +1,4 @@
-package com.gmail.yevgen.spring;
+package com.gmail.yevgen.spring.ui;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.UUID;
@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.gmail.yevgen.spring.domain.Person;
 import com.gmail.yevgen.spring.domain.PersonRepository;
-import com.gmail.yevgen.spring.ui.NewUserView;
 import com.vaadin.flow.component.HtmlComponent;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
@@ -66,7 +65,10 @@ public class MainView extends VerticalLayout {
         titleMessage.add(new Label("One of these days"), br);
         titleMessage.add(new Label("Pink Floyd, 1971"));
 
-        add(buttonsLine, titleMessage);
+        Div pulse = new Div();
+        pulse.addClassNames("p", "p-1");
+
+        add(buttonsLine, titleMessage, pulse);
         setSizeFull();
         setAlignItems(Alignment.CENTER);
     }

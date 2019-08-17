@@ -9,12 +9,11 @@ import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.gmail.yevgen.spring.MainView;
 import com.gmail.yevgen.spring.domain.PersonRepository;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
-import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -39,7 +38,7 @@ public class AllUsersLayout extends VerticalLayout implements HasUrlParameter<St
     }
 
     public void showPeopleView(UUID id) {
-        H3 updateUserHeader = new H3("People");
+        Label updateUserHeader = new Label("People");
         updateUserHeader.addClassName("pageHeader");
         Button backButton = new Button(" Back", VaadinIcon.ARROW_BACKWARD.create(), event -> {
             UI.getCurrent().navigate("account",

@@ -15,7 +15,6 @@ import javax.imageio.ImageIO;
 import org.jasypt.encryption.pbe.PBEStringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.gmail.yevgen.spring.MainView;
 import com.gmail.yevgen.spring.domain.Person;
 import com.gmail.yevgen.spring.domain.PersonRepository;
 import com.vaadin.flow.component.UI;
@@ -24,8 +23,8 @@ import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.NativeButton;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.Notification.Position;
@@ -64,7 +63,7 @@ public class NewUserView extends VerticalLayout {
         this.passwordEncryptor = passwordEncryptor;
         PersonLayout layoutWithBinder = new PersonLayout();
 
-        H3 newUserHeader = new H3("New user registration");
+        Label newUserHeader = new Label("New user registration");
         newUserHeader.addClassName("pageHeader");
 
         Binder<Person> binder = new Binder<>();
