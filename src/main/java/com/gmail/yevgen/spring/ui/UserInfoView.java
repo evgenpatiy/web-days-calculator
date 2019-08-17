@@ -146,8 +146,17 @@ public class UserInfoView extends VerticalLayout implements HasUrlParameter<Stri
             dialog.close();
             UI.getCurrent().navigate(MainView.class);
         });
+
+        Button seeOtherPeopleButton = new Button("See people", e -> {
+            dialog.close();
+            UI.getCurrent().navigate("people",
+                    QueryParameters.simple(Stream.of(new SimpleEntry<>("user", String.valueOf(person.getId())))
+                            .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue))));
+        });
+        HorizontalLayout seeOtherPeopleBar = new HorizontalLayout(seeOtherPeopleButton);
+        seeOtherPeopleBar.setJustifyContentMode(JustifyContentMode.CENTER);
         HorizontalLayout dialogButtonsBar = new HorizontalLayout(editButton, deleteButton, logoutButton);
-        dialog.add(mainLayout, dialogButtonsBar);
+        dialog.add(mainLayout, seeOtherPeopleBar, dialogButtonsBar);
         dialog.setOpened(true);
     }
 }
