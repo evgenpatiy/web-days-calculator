@@ -11,13 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.gmail.yevgen.spring.domain.Person;
 import com.gmail.yevgen.spring.domain.PersonRepository;
 import com.gmail.yevgen.spring.ui.NewUserView;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HtmlComponent;
-import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
@@ -102,10 +99,10 @@ public class MainView extends VerticalLayout {
         login.setDescription("How many days you're lived already");
         login.setI18n(i18n);
         login.addLoginListener(event -> {
-            if (ifPersonWithLoginExists(event.getUsername())) {
-                if (ifPersonWithLoginAndPasswordExists(event.getUsername(), event.getPassword())) {
+            if (ifPersonWithLoginExists(event.getUsername().toLowerCase())) {
+                if (ifPersonWithLoginAndPasswordExists(event.getUsername().toLowerCase(), event.getPassword())) {
                     login.close();
-                    UUID id = personRepository.findByLogin(event.getUsername()).getId();
+                    UUID id = personRepository.findByLogin(event.getUsername().toLowerCase()).getId();
                     UI.getCurrent().navigate("account",
                             QueryParameters.simple(Stream.of(new SimpleEntry<>("user", String.valueOf(id)))
                                     .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue))));
@@ -128,15 +125,5 @@ public class MainView extends VerticalLayout {
     boolean ifPersonWithLoginAndPasswordExists(String login, String password) {
         Person p = personRepository.findByLogin(login);
         return p != null && password.equals(passwordEncryptor.decrypt(p.getPassword()));
-    }
-
-    @Tag("nin")
-    @HtmlImport(value = "frontend://html/test.html")
-    private class HtmlPart extends Component {
-        private static final long serialVersionUID = 5441729908895328888L;
-
-        public HtmlPart() {
-
-        }
     }
 }
