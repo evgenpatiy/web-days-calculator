@@ -1,6 +1,7 @@
 package com.gmail.yevgen.spring.ui;
 
 import java.util.AbstractMap.SimpleEntry;
+import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -10,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.gmail.yevgen.spring.domain.Person;
 import com.gmail.yevgen.spring.domain.PersonRepository;
-import com.vaadin.flow.component.HtmlComponent;
+import com.gmail.yevgen.spring.worker.FileWorker;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -42,12 +43,16 @@ public class MainView extends VerticalLayout {
     private static final long serialVersionUID = 7657167124498205619L;
     private PersonRepository personRepository;
     private PBEStringEncryptor passwordEncryptor;
+    @SuppressWarnings("unused")
+    private FileWorker fileWorker;
 
     @Autowired
-    public MainView(PersonRepository personRepository, PBEStringEncryptor passwordEncryptor) {
+    public MainView(PersonRepository personRepository, PBEStringEncryptor passwordEncryptor, FileWorker fileWorker) {
         this.personRepository = personRepository;
         this.passwordEncryptor = passwordEncryptor;
+        this.fileWorker = fileWorker;
 
+        addClassName("mainPageBackground");
         Button signInButton = new Button(" Sign In", VaadinIcon.SIGN_IN.create(), e -> showLoginView().setOpened(true));
         signInButton.addClassName("topButton");
 
@@ -59,16 +64,19 @@ public class MainView extends VerticalLayout {
         buttonsLine.add(signInButton, signUpButton);
         buttonsLine.addClassName("topButtonsBar");
 
-        HtmlComponent br = new HtmlComponent("br");
-        Div titleMessage = new Div();
-        titleMessage.addClassName("titleMessage");
-        titleMessage.add(new Label("One of these days"), br);
-        titleMessage.add(new Label("Pink Floyd, 1971"));
+        Label text = new Label();
+        text.addClassName("wrapLabel");
+        text.setText(fileWorker.fileToString("text/" + new Random().nextInt(10) + ".txt"));
+        text.setEnabled(false);
 
-        Div pulse = new Div();
-        pulse.addClassNames("p", "p-1");
+        Div pulse1 = new Div();
+        pulse1.addClassNames("p", "p-3");
+        Div pulse2 = new Div();
+        pulse2.addClassNames("p", "p-2");
+        Div pulse3 = new Div();
+        pulse3.addClassNames("p", "p-1");
 
-        add(buttonsLine, titleMessage, pulse);
+        add(buttonsLine, text, pulse1, pulse2, pulse3);
         setSizeFull();
         setAlignItems(Alignment.CENTER);
     }
