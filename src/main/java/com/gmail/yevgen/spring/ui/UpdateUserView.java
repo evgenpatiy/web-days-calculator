@@ -23,7 +23,6 @@ import com.gmail.yevgen.spring.domain.PersonRepository;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;
-import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Image;
@@ -53,11 +52,11 @@ import com.vaadin.flow.server.StreamResource;
 import elemental.json.Json;
 import net.coobird.thumbnailator.Thumbnails;
 
-@Route("update")
+@Route(value = UpdateUserView.ROUTE, layout = MainLayout.class)
 @PageTitle("Update user info")
-@StyleSheet("frontend://css/style.css")
 public class UpdateUserView extends VerticalLayout implements HasUrlParameter<String> {
     private static final long serialVersionUID = 2659811876997659447L;
+    public static final String ROUTE = "update";
     private final PersonRepository personRepository;
     private PBEStringEncryptor passwordEncryptor;
     private Person person;

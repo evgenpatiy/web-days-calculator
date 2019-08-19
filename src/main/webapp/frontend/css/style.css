@@ -14,6 +14,10 @@ body {
     // 2f2f3b
 }
 
+.digitSpan {
+    font-weight: bold;
+}
+
 .wrapLabel {
     color: grey;
     font-size: 0.75em;

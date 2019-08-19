@@ -18,14 +18,12 @@ import com.gmail.yevgen.spring.domain.Person;
 import com.gmail.yevgen.spring.domain.PersonRepository;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -38,11 +36,11 @@ import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 
-@Route("account")
+@Route(value = UserInfoView.ROUTE, layout = MainLayout.class)
 @PageTitle("View account info")
-@StyleSheet("frontend://css/style.css")
 public class UserInfoView extends VerticalLayout implements HasUrlParameter<String> {
     private static final long serialVersionUID = -3227439462230694954L;
+    public static final String ROUTE = "account";
     private PersonRepository personRepository;
 
     @Autowired
@@ -89,18 +87,18 @@ public class UserInfoView extends VerticalLayout implements HasUrlParameter<Stri
         Label birthDateLabel = new Label(birthDateText);
         birthDateLabel.addClassName("line");
 
-        Label totalDays = new Label("Total days: " + ChronoUnit.DAYS.between(person.getBirthDate(), LocalDate.now()));
-        totalDays.addClassName("timesDiv");
+        Label totalDaysLabel = new Label(
+                "Total days: " + ChronoUnit.DAYS.between(person.getBirthDate(), LocalDate.now()));
+        totalDaysLabel.addClassName("timesDiv");
 
         Period period = Period.between(person.getBirthDate(), LocalDate.now());
-        Div yearsDiv = new Div(new Span(period.getYears() + " years"));
-        Div monthsDiv = new Div(new Span(period.getMonths() + " months"));
-        Div daysDiv = new Div(new Span(period.getDays() + " days"));
-
         Details periodDetails = new Details();
         periodDetails.setSummaryText("see what behind my back");
-        periodDetails.addContent(yearsDiv, monthsDiv, daysDiv, totalDays);
+        Label yearMonthDayLabel = new Label(
+                period.getYears() + " years, " + period.getMonths() + " months, " + period.getDays() + " days");
+        VerticalLayout detailsLayout = new VerticalLayout(yearMonthDayLabel, totalDaysLabel);
 
+        periodDetails.addContent(detailsLayout);
         mainLayout.add(nameLabel, photo, birthDateLabel, periodDetails);
 
         Dialog dialog = new Dialog();
@@ -146,16 +144,15 @@ public class UserInfoView extends VerticalLayout implements HasUrlParameter<Stri
             UI.getCurrent().navigate(MainView.class);
         });
 
-        Button seeOtherPeopleButton = new Button("See people", e -> {
+        Button seeOtherPeopleButton = new Button("", VaadinIcon.GLOBE.create(), e -> {
             dialog.close();
             UI.getCurrent().navigate("people",
                     QueryParameters.simple(Stream.of(new SimpleEntry<>("user", String.valueOf(person.getId())))
                             .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue))));
         });
-        HorizontalLayout seeOtherPeopleBar = new HorizontalLayout(seeOtherPeopleButton);
-        seeOtherPeopleBar.setJustifyContentMode(JustifyContentMode.CENTER);
-        HorizontalLayout dialogButtonsBar = new HorizontalLayout(editButton, deleteButton, logoutButton);
-        dialog.add(mainLayout, seeOtherPeopleBar, dialogButtonsBar);
+        HorizontalLayout dialogButtonsBar = new HorizontalLayout(seeOtherPeopleButton, editButton, deleteButton,
+                logoutButton);
+        dialog.add(mainLayout, dialogButtonsBar);
         dialog.setOpened(true);
     }
 }

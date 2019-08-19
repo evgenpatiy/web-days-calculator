@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.gmail.yevgen.spring.domain.PersonRepository;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -25,15 +24,15 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
 
-@Route("people")
+@Route(value = AllUsersView.ROUTE, layout = MainLayout.class)
 @PageTitle("All users")
-@StyleSheet("frontend://css/style.css")
-public class AllUsersLayout extends VerticalLayout implements HasUrlParameter<String> {
+public class AllUsersView extends VerticalLayout implements HasUrlParameter<String> {
     private static final long serialVersionUID = -7348471267394419981L;
+    public static final String ROUTE = "people";
     private final PersonRepository personRepository;
 
     @Autowired
-    public AllUsersLayout(PersonRepository personRepository) {
+    public AllUsersView(PersonRepository personRepository) {
         this.personRepository = personRepository;
     }
 

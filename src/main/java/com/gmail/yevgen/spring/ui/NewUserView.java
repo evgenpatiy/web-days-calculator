@@ -20,7 +20,6 @@ import com.gmail.yevgen.spring.domain.PersonRepository;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;
-import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
@@ -48,11 +47,11 @@ import com.vaadin.flow.server.StreamResource;
 import elemental.json.Json;
 import net.coobird.thumbnailator.Thumbnails;
 
-@Route("signup")
+@Route(value = NewUserView.ROUTE, layout = MainLayout.class)
 @PageTitle("New user registration")
-@StyleSheet("frontend://css/style.css")
 public class NewUserView extends VerticalLayout {
     private static final long serialVersionUID = 2659811876997659447L;
+    public static final String ROUTE = "signup";
     private final PersonRepository personRepository;
     private PBEStringEncryptor passwordEncryptor;
     private Person person;
