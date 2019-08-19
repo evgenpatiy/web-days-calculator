@@ -30,7 +30,6 @@ public class MainView extends VerticalLayout {
     public MainView(PersonRepository personRepository, PBEStringEncryptor passwordEncryptor, FileWorker fileWorker) {
         this.fileWorker = fileWorker;
 
-        addClassName("mainPageBackground");
         Button signInButton = new Button(" Sign In", VaadinIcon.SIGN_IN.create(),
                 event -> UI.getCurrent().navigate(LoginView.class));
         signInButton.addClassName("topButton");

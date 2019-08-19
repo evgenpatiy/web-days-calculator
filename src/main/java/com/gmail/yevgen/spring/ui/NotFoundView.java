@@ -15,7 +15,6 @@ import com.vaadin.flow.router.ParentLayout;
 @PageTitle("Page not found")
 public class NotFoundView extends VerticalLayout implements HasErrorParameter<NotFoundException> {
     private static final long serialVersionUID = -7335258922000659650L;
-
     private Paragraph error = new Paragraph();
 
     public NotFoundView() {

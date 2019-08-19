@@ -1,21 +1,14 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 html {
     background: linear-gradient(220deg, #484962 45%, #d06b41 100%);
-    // 2f2f3b
 }
 
 body {
   font-family: Roboto;
 }
 
-.mainPageBackground {
-    background: url("https://lh3.googleusercontent.com/NXctQz6hqbhWBcefy0GNt4eDiF0SruTlXaM47vjbqMev3UxzAvauE1IMYTKyhO6nYnCRrAdUZF0fPEGMyFwTNa0_jz8ANg6wUM9-lQLM31LfWubbqqSEI5Ff6KlHyIEMH493-ZxdbWGAoLZaoWU9jIphXS1gHSLEE8o8qRJ-OPYVgLx_EKkQEfPnN52tCbAb_-zWWXq4zo4etnETfo_yM7VjKJzdWhTLn5PWbo8hhbHTJoOVZd_gPPYU7NeiMkQQhCTOWyOV9AztYUdlxYIESogHSNTrocl6nfAdu-vdUvst85V9slXLrQBHOMySvolVR60_D9pLfX-1K93bF5U0YjyTsAA8bh58YStod9q9V1izv23UYq52lSp2_cFsKtYOJdqXzdx8OPUVWmkWInuZQVcWuI9dE-TcJs3LtyJubDCoQvKFkEg0e-wUZOkAikDL_UqysSyWBKEJ0Zu-TeMs99LAlAMMBS0TKHfPqRmGsHpvPutCHhn9DGGzukL5o4m0UUbVEGD6GrI0CzWQGtxXUOYerCPZgG_MTh82SgeMx3O4H63M4d1GFuwNjVRkUsaucsWGZIw0sDbrhR27c6waJPmXEEuYwPHT3QiYIcnIaWXWEckg7qLK-YKOtZNuHo8OhL_U9VGpfax8kYi4KiRgEijlzVSODBxH=w500-h250-no") repeat-x left bottom,
-        linear-gradient(220deg, #484962 45%, #d06b41 100%);
-    // 2f2f3b
-}
-
-.digitSpan {
-    font-weight: bold;
+.scrollable {
+  overflow: auto;
 }
 
 .wrapLabel {

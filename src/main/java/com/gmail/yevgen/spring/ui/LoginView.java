@@ -34,7 +34,7 @@ public class LoginView extends VerticalLayout {
         this.personRepository = personRepository;
         this.passwordEncryptor = passwordEncryptor;
 
-        Label viewDetailsHeader = new Label("Authentication");
+        Label viewDetailsHeader = new Label("User authentication");
         viewDetailsHeader.addClassName("pageHeader");
         add(viewDetailsHeader);
 
@@ -71,11 +71,11 @@ public class LoginView extends VerticalLayout {
         wrongLoginNotification.open();
     }
 
-    boolean ifPersonWithLoginExists(String login) {
+    private final boolean ifPersonWithLoginExists(String login) {
         return personRepository.findByLogin(login.toLowerCase()) != null;
     }
 
-    boolean ifPersonWithLoginAndPasswordExists(String login, String password) {
+    private final boolean ifPersonWithLoginAndPasswordExists(String login, String password) {
         Person p = personRepository.findByLogin(login);
         return p != null && password.equals(passwordEncryptor.decrypt(p.getPassword()));
     }

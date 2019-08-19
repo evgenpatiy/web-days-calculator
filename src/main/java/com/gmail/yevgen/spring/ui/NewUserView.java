@@ -209,13 +209,13 @@ public class NewUserView extends VerticalLayout {
         dialog.setOpened(true);
     }
 
-    void savePerson(Person p) {
+    private final void savePerson(Person p) {
         p.setPassword(passwordEncryptor.encrypt(p.getPassword()));
         p.setLogin(p.getLogin().toLowerCase());
         personRepository.save(p);
     }
 
-    boolean ifPersonWithLoginExists(Person p) {
+    private final boolean ifPersonWithLoginExists(Person p) {
         return personRepository.findByLogin(p.getLogin()) != null;
     }
 }

@@ -164,7 +164,6 @@ public class UpdateUserView extends VerticalLayout implements HasUrlParameter<St
         confirmPasswordField.setRequiredIndicatorVisible(true);
         birthDatePicker.setRequiredIndicatorVisible(true);
 
-        // user input validation
         binder.forField(nameField).withValidator(new StringLengthValidator("name is mandatory", 1, null))
                 .bind(Person::getName, Person::setName);
 
