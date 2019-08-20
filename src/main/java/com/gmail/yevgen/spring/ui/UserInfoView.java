@@ -38,7 +38,7 @@ import com.vaadin.flow.server.StreamResource;
 
 @Route(value = UserInfoView.ROUTE, layout = MainLayout.class)
 @PageTitle("View account info")
-public class UserInfoView extends VerticalLayout implements HasUrlParameter<String> {
+public final class UserInfoView extends VerticalLayout implements HasUrlParameter<String> {
     private static final long serialVersionUID = -3227439462230694954L;
     public static final String ROUTE = "account";
     private PersonRepository personRepository;
@@ -58,7 +58,7 @@ public class UserInfoView extends VerticalLayout implements HasUrlParameter<Stri
         showDaysViewPanel(id);
     }
 
-    private void showDaysViewPanel(UUID id) {
+    private final void showDaysViewPanel(UUID id) {
         Person person = personRepository.findById(id).get();
         VerticalLayout mainLayout = new VerticalLayout();
         mainLayout.setJustifyContentMode(JustifyContentMode.CENTER);

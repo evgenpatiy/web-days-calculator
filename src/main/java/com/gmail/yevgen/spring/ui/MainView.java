@@ -21,7 +21,7 @@ import com.vaadin.flow.server.PWA;
 @PageTitle("Days calculator")
 @Route(value = "", layout = MainLayout.class)
 @PWA(name = "Web days calculator", shortName = "daysCalc", iconPath = "../frontend/img/logo.png")
-public class MainView extends VerticalLayout {
+public final class MainView extends VerticalLayout {
     private static final long serialVersionUID = 7657167124498205619L;
     @SuppressWarnings("unused")
     private FileWorker fileWorker;

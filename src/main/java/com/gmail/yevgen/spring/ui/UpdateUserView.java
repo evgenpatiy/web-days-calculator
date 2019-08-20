@@ -54,7 +54,7 @@ import net.coobird.thumbnailator.Thumbnails;
 
 @Route(value = UpdateUserView.ROUTE, layout = MainLayout.class)
 @PageTitle("Update user info")
-public class UpdateUserView extends VerticalLayout implements HasUrlParameter<String> {
+public final class UpdateUserView extends VerticalLayout implements HasUrlParameter<String> {
     private static final long serialVersionUID = 2659811876997659447L;
     public static final String ROUTE = "update";
     private final PersonRepository personRepository;
@@ -67,17 +67,13 @@ public class UpdateUserView extends VerticalLayout implements HasUrlParameter<St
         this.passwordEncryptor = passwordEncryptor;
     }
 
-    void savePerson(Person p) {
+    private final void savePerson(Person p) {
         p.setPassword(passwordEncryptor.encrypt(p.getPassword()));
         p.setLogin(p.getLogin().toLowerCase());
         personRepository.save(p);
     }
 
-    boolean ifPersonWithLoginExists(Person p) {
-        return personRepository.findByLogin(p.getLogin()) != null;
-    }
-
-    private void showUpdateInfoView(UUID id) {
+    private final void showUpdateInfoView(UUID id) {
         PersonLayout layoutWithBinder = new PersonLayout();
         H3 updateUserHeader = new H3("Update user info");
         updateUserHeader.addClassName("pageHeader");

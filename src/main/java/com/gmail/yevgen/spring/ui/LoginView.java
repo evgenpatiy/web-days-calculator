@@ -23,7 +23,7 @@ import com.vaadin.flow.router.Route;
 
 @Route(value = LoginView.ROUTE, layout = MainLayout.class)
 @PageTitle("User login")
-public class LoginView extends VerticalLayout {
+public final class LoginView extends VerticalLayout {
     private static final long serialVersionUID = -3319481239574370949L;
     public static final String ROUTE = "login";
     private PersonRepository personRepository;

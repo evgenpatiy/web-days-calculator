@@ -27,8 +27,6 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.splitlayout.SplitLayout;
-import com.vaadin.flow.component.splitlayout.SplitLayout.Orientation;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.Location;
@@ -40,7 +38,7 @@ import com.vaadin.flow.server.StreamResource;
 
 @Route(value = AllUsersView.ROUTE, layout = MainLayout.class)
 @PageTitle("All users")
-public class AllUsersView extends VerticalLayout implements HasUrlParameter<String> {
+public final class AllUsersView extends VerticalLayout implements HasUrlParameter<String> {
     private static final long serialVersionUID = -7348471267394419981L;
     public static final String ROUTE = "people";
     private final PersonRepository personRepository;
@@ -74,27 +72,18 @@ public class AllUsersView extends VerticalLayout implements HasUrlParameter<Stri
         topBarWithHeader.add(topButtonsBar);
         add(topBarWithHeader);
 
-        SplitLayout splitLayout = new SplitLayout();
-        splitLayout.setSizeFull();
-        splitLayout.setOrientation(Orientation.HORIZONTAL);
-        splitLayout.addToSecondary(new Label("Charts"));
-
-        VerticalLayout leftLayout = new VerticalLayout();
-        leftLayout.setHeight("500px");
-        leftLayout.addClassName("scrollable");
+        HorizontalLayout cardsLayout = new HorizontalLayout();
         personRepository.findAll().forEach(person -> {
             RippleClickableCard card = new RippleClickableCard(onClick -> {
                 showDaysViewPanel(person.getId());
             }, new Item(person.getName(), ChronoUnit.DAYS.between(person.getBirthDate(), LocalDate.now()) + " days"));
             card.setWidth("200px");
-            leftLayout.add(card);
+            cardsLayout.add(card);
         });
-
-        splitLayout.addToPrimary(leftLayout);
-        add(splitLayout);
+        add(cardsLayout);
     }
 
-    private void showDaysViewPanel(UUID id) {
+    private final void showDaysViewPanel(UUID id) {
         Person person = personRepository.findById(id).get();
         VerticalLayout mainLayout = new VerticalLayout();
         mainLayout.setJustifyContentMode(JustifyContentMode.CENTER);
