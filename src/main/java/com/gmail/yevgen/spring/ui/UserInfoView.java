@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.gmail.yevgen.spring.domain.Person;
-import com.gmail.yevgen.spring.domain.PersonRepository;
+import com.gmail.yevgen.spring.domain.repository.PersonRepository;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.details.Details;

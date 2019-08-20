@@ -1,11 +1,12 @@
 package com.gmail.yevgen.spring.ui;
 
+import java.io.IOException;
 import java.util.Random;
 
 import org.jasypt.encryption.pbe.PBEStringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.gmail.yevgen.spring.domain.PersonRepository;
+import com.gmail.yevgen.spring.domain.repository.PersonRepository;
 import com.gmail.yevgen.spring.worker.FileWorker;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -44,7 +45,10 @@ public final class MainView extends VerticalLayout {
 
         Label text = new Label();
         text.addClassName("wrapLabel");
-        text.setText(fileWorker.fileToString("text/" + new Random().nextInt(10) + ".txt"));
+        try {
+            text.setText(fileWorker.fileToString("text/" + new Random().nextInt(10) + ".txt"));
+        } catch (IOException e) {
+        }
         text.setEnabled(false);
 
         Div pulse1 = new Div();

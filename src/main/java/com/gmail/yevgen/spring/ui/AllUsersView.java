@@ -17,16 +17,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.github.appreciated.card.RippleClickableCard;
 import com.github.appreciated.card.content.Item;
 import com.gmail.yevgen.spring.domain.Person;
-import com.gmail.yevgen.spring.domain.PersonRepository;
+import com.gmail.yevgen.spring.domain.repository.PersonRepository;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.Location;
@@ -80,7 +85,30 @@ public final class AllUsersView extends VerticalLayout implements HasUrlParamete
             card.setWidth("200px");
             cardsLayout.add(card);
         });
-        add(cardsLayout);
+
+        Grid<Person> grid = new Grid<>(Person.class);
+        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS,
+                GridVariant.LUMO_ROW_STRIPES);
+        grid.setColumns("name", "birthDate", "profilePicture");
+        grid.setItems(personRepository.findAll());
+        grid.addItemClickListener(event -> {
+            showDaysViewPanel(event.getItem().getId());
+        });
+
+        Label searchLabel = new Label("Search: ");
+        TextField nameSearchField = new TextField();
+        nameSearchField.setPlaceholder("by name");
+        nameSearchField.setClearButtonVisible(true);
+        nameSearchField.setValueChangeMode(ValueChangeMode.EAGER);
+        nameSearchField.addValueChangeListener(e -> {
+            grid.setItems(personRepository.findAll());
+        });
+
+        DatePicker dateSearchField = new DatePicker();
+        dateSearchField.setPlaceholder("born before");
+        HorizontalLayout searchBar = new HorizontalLayout(searchLabel, nameSearchField, dateSearchField);
+        searchBar.setDefaultVerticalComponentAlignment(Alignment.CENTER);
+        add(searchBar, grid);
     }
 
     private final void showDaysViewPanel(UUID id) {

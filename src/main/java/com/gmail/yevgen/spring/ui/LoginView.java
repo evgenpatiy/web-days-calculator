@@ -9,7 +9,7 @@ import org.jasypt.encryption.pbe.PBEStringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.gmail.yevgen.spring.domain.Person;
-import com.gmail.yevgen.spring.domain.PersonRepository;
+import com.gmail.yevgen.spring.domain.repository.PersonRepository;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
