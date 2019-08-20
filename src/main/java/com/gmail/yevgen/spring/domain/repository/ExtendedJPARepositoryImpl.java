@@ -1,6 +1,7 @@
 package com.gmail.yevgen.spring.domain.repository;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -28,7 +29,18 @@ public class ExtendedJPARepositoryImpl<T, ID extends Serializable> extends Simpl
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<T> cQuery = builder.createQuery(getDomainClass());
         Root<T> root = cQuery.from(getDomainClass());
-        cQuery.select(root).where(builder.like(root.<String>get(attributeName), "%" + text + "%"));
+        cQuery.select(root)
+                .where(builder.like(builder.lower(root.<String>get(attributeName)), "%" + text.toLowerCase() + "%"));
+        TypedQuery<T> query = entityManager.createQuery(cQuery);
+        return query.getResultList();
+    }
+
+    @Transactional
+    public List<T> findByDateBefore(LocalDate date) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<T> cQuery = builder.createQuery(getDomainClass());
+        Root<T> root = cQuery.from(getDomainClass());
+        cQuery.select(root).where(builder.lessThanOrEqualTo(root.<LocalDate>get("birthDate"), date));
         TypedQuery<T> query = entityManager.createQuery(cQuery);
         return query.getResultList();
     }

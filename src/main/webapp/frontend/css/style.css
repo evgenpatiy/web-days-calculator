@@ -1,6 +1,10 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 html {
     background: linear-gradient(220deg, #484962 45%, #d06b41 100%);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    background-size: cover;
 }
 
 body {

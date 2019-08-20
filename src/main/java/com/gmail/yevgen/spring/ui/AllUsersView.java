@@ -14,8 +14,6 @@ import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.github.appreciated.card.RippleClickableCard;
-import com.github.appreciated.card.content.Item;
 import com.gmail.yevgen.spring.domain.Person;
 import com.gmail.yevgen.spring.domain.repository.PersonRepository;
 import com.vaadin.flow.component.UI;
@@ -77,6 +75,7 @@ public final class AllUsersView extends VerticalLayout implements HasUrlParamete
         topBarWithHeader.add(topButtonsBar);
         add(topBarWithHeader);
 
+        /*
         HorizontalLayout cardsLayout = new HorizontalLayout();
         personRepository.findAll().forEach(person -> {
             RippleClickableCard card = new RippleClickableCard(onClick -> {
@@ -85,6 +84,7 @@ public final class AllUsersView extends VerticalLayout implements HasUrlParamete
             card.setWidth("200px");
             cardsLayout.add(card);
         });
+        */
 
         Grid<Person> grid = new Grid<>(Person.class);
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS,
@@ -100,12 +100,16 @@ public final class AllUsersView extends VerticalLayout implements HasUrlParamete
         nameSearchField.setPlaceholder("by name");
         nameSearchField.setClearButtonVisible(true);
         nameSearchField.setValueChangeMode(ValueChangeMode.EAGER);
-        nameSearchField.addValueChangeListener(e -> {
-            grid.setItems(personRepository.findAll());
+        nameSearchField.addValueChangeListener(event -> {
+            grid.setItems(personRepository.findByAttributeContainsText("name", nameSearchField.getValue()));
         });
 
         DatePicker dateSearchField = new DatePicker();
         dateSearchField.setPlaceholder("born before");
+        dateSearchField.addValueChangeListener(event -> {
+            grid.setItems(personRepository.findByDateBefore(dateSearchField.getValue()));
+        });
+
         HorizontalLayout searchBar = new HorizontalLayout(searchLabel, nameSearchField, dateSearchField);
         searchBar.setDefaultVerticalComponentAlignment(Alignment.CENTER);
         add(searchBar, grid);
