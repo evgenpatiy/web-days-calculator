@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.gmail.yevgen.spring.domain.Person;
 import com.gmail.yevgen.spring.domain.repository.PersonRepository;
+import com.gmail.yevgen.spring.worker.MailWorker;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -29,6 +31,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.upload.Upload;
@@ -37,6 +40,7 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.data.binder.BindingValidationStatus;
 import com.vaadin.flow.data.validator.DateRangeValidator;
+import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
@@ -54,12 +58,14 @@ public class NewUserView extends VerticalLayout {
     public static final String ROUTE = "signup";
     private final PersonRepository personRepository;
     private PBEStringEncryptor passwordEncryptor;
+    private MailWorker mailWorker;
     private Person person;
 
     @Autowired
-    public NewUserView(PersonRepository personRepository, PBEStringEncryptor passwordEncryptor) {
+    public NewUserView(PersonRepository personRepository, PBEStringEncryptor passwordEncryptor, MailWorker mailWorker) {
         this.personRepository = personRepository;
         this.passwordEncryptor = passwordEncryptor;
+        this.mailWorker = mailWorker;
         PersonLayout layoutWithBinder = new PersonLayout();
 
         Label newUserHeader = new Label("New user registration");
@@ -67,6 +73,7 @@ public class NewUserView extends VerticalLayout {
 
         Binder<Person> binder = new Binder<>();
         person = new Person();
+        person.setActive(false);
 
         Image photo = new Image();
         photo.setSrc("frontend/img/anon.png");
@@ -101,9 +108,11 @@ public class NewUserView extends VerticalLayout {
         });
 
         TextField nameField = new TextField();
+        nameField.setClearButtonVisible(true);
         nameField.setValueChangeMode(ValueChangeMode.EAGER);
 
         TextField loginField = new TextField();
+        loginField.setClearButtonVisible(true);
         loginField.setValueChangeMode(ValueChangeMode.EAGER);
 
         PasswordField passwordField = new PasswordField();
@@ -113,7 +122,11 @@ public class NewUserView extends VerticalLayout {
 
         DatePicker birthDatePicker = new DatePicker();
 
-        Button confirmButton = new Button("OK");
+        EmailField emailField = new EmailField();
+        emailField.setClearButtonVisible(true);
+        emailField.setErrorMessage("Please enter a valid email address");
+
+        Button registerUserButton = new Button("Register");
         Button resetButton = new Button("Reset");
         Button cancelButton = new Button("Cancel");
 
@@ -122,10 +135,11 @@ public class NewUserView extends VerticalLayout {
         layoutWithBinder.addPersonItem("Password:", passwordField);
         layoutWithBinder.addPersonItem("Confirm:", confirmPasswordField);
         layoutWithBinder.addPersonItem("Birthdate:", birthDatePicker);
+        layoutWithBinder.addPersonItem("Email:", emailField);
 
         HorizontalLayout dialogButtonsBar = new HorizontalLayout();
-        dialogButtonsBar.add(confirmButton, resetButton, cancelButton);
-        confirmButton.getStyle().set("marginRight", "10px");
+        dialogButtonsBar.add(registerUserButton, resetButton, cancelButton);
+        registerUserButton.getStyle().set("marginRight", "10px");
         resetButton.getStyle().set("marginRight", "10px");
 
         nameField.setRequiredIndicatorVisible(true);
@@ -160,11 +174,14 @@ public class NewUserView extends VerticalLayout {
                         new DateRangeValidator("birthdate out of sense", LocalDate.ofYearDay(1, 1), LocalDate.now()))
                 .bind(Person::getBirthDate, Person::setBirthDate);
 
+        binder.forField(emailField).withValidator(new EmailValidator("correct email is mandatory"))
+                .bind(Person::getEmail, Person::setEmail);
+
         Dialog dialog = new Dialog();
         dialog.setCloseOnEsc(false);
         dialog.setCloseOnOutsideClick(false);
 
-        confirmButton.addClickListener(event -> {
+        registerUserButton.addClickListener(event -> {
             if (binder.writeBeanIfValid(person)) {
                 if (ifPersonWithLoginExists(person)) {
                     Div content = new Div();
@@ -175,12 +192,52 @@ public class NewUserView extends VerticalLayout {
                     wrongLoginNotification.setDuration(3000);
                     wrongLoginNotification.setPosition(Position.MIDDLE);
                     wrongLoginNotification.open();
+                } else if (ifPersonWithEmailExists(person)) {
+                    Div content = new Div();
+                    content.addClassName("errorNotification");
+                    content.setText("E-mail " + person.getEmail() + " already registered. Choose different e-mail");
+
+                    Notification wrongLoginNotification = new Notification(content);
+                    wrongLoginNotification.setDuration(3000);
+                    wrongLoginNotification.setPosition(Position.MIDDLE);
+                    wrongLoginNotification.open();
                 } else {
-                    savePerson(person);
-                    dialog.close();
-                    UI.getCurrent().navigate("account",
-                            QueryParameters.simple(Stream.of(new SimpleEntry<>("user", String.valueOf(person.getId())))
-                                    .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue))));
+                    person.setActivationCode(UUID.randomUUID());
+
+                    mailWorker.sendMail(person.getEmail(), "WebDays calculator activation code",
+                            person.getActivationCode().toString());
+
+                    Dialog confirmDialog = new Dialog();
+                    Label confirmDialogLabel = new Label("Check e-mail and confirm activation code you got");
+                    TextField activationCodeTextField = new TextField();
+                    activationCodeTextField.setSizeFull();
+                    Button confirmActivationCodeButton = new Button("Confirm", e -> {
+                        try {
+                            if (person.getActivationCode()
+                                    .compareTo(UUID.fromString(activationCodeTextField.getValue())) == 0) {
+                                person.setActive(true);
+                                savePerson(person);
+                                confirmDialog.close();
+                                dialog.close();
+                                Notification.show("Person " + person.getName() + " succesfully created!");
+                                UI.getCurrent().navigate("account",
+                                        QueryParameters.simple(Stream
+                                                .of(new SimpleEntry<>("user", String.valueOf(person.getId()))).collect(
+                                                        Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue))));
+                            } else {
+                                Notification.show("Wrong activation code");
+                            }
+                        } catch (IllegalArgumentException ex) {
+                            Notification.show("Wrong activation code");
+                        }
+                    });
+                    VerticalLayout confirmDialogLayout = new VerticalLayout(confirmDialogLabel, activationCodeTextField,
+                            confirmActivationCodeButton);
+                    confirmDialogLayout.setAlignItems(Alignment.CENTER);
+                    confirmDialog.add(confirmDialogLayout);
+                    confirmDialog.setCloseOnEsc(false);
+                    confirmDialog.setCloseOnOutsideClick(false);
+                    confirmDialog.open();
                 }
             } else {
                 BinderValidationStatus<Person> validate = binder.validate();
@@ -217,5 +274,9 @@ public class NewUserView extends VerticalLayout {
 
     private final boolean ifPersonWithLoginExists(Person p) {
         return personRepository.findByLogin(p.getLogin()) != null;
+    }
+
+    private final boolean ifPersonWithEmailExists(Person p) {
+        return personRepository.findByEmail(p.getEmail()) != null;
     }
 }

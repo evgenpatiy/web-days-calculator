@@ -77,17 +77,6 @@ public final class AllUsersView extends VerticalLayout implements HasUrlParamete
         topBarWithHeader.add(topButtonsBar);
         add(topBarWithHeader);
 
-        /*
-        HorizontalLayout cardsLayout = new HorizontalLayout();
-        personRepository.findAll().forEach(person -> {
-            RippleClickableCard card = new RippleClickableCard(onClick -> {
-                showDaysViewPanel(person.getId());
-            }, new Item(person.getName(), ChronoUnit.DAYS.between(person.getBirthDate(), LocalDate.now()) + " days"));
-            card.setWidth("200px");
-            cardsLayout.add(card);
-        });
-        */
-
         Grid<Person> grid = new Grid<>(Person.class);
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS,
                 GridVariant.LUMO_ROW_STRIPES);
@@ -155,7 +144,7 @@ public final class AllUsersView extends VerticalLayout implements HasUrlParamete
 
         Period period = Period.between(person.getBirthDate(), LocalDate.now());
         Details periodDetails = new Details();
-        periodDetails.setSummaryText("see what behind my back");
+        periodDetails.setSummaryText("see what behind the back");
         Label yearMonthDayLabel = new Label(
                 period.getYears() + " years, " + period.getMonths() + " months, " + period.getDays() + " days");
         VerticalLayout detailsLayout = new VerticalLayout(yearMonthDayLabel, totalDaysLabel);

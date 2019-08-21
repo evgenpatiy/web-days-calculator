@@ -30,6 +30,7 @@ import com.vaadin.flow.component.html.NativeButton;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.upload.Upload;
@@ -38,6 +39,7 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.data.binder.BindingValidationStatus;
 import com.vaadin.flow.data.validator.DateRangeValidator;
+import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.BeforeEvent;
@@ -123,10 +125,12 @@ public final class UpdateUserView extends VerticalLayout implements HasUrlParame
 
         TextField nameField = new TextField();
         nameField.setValue(person.getName());
+        nameField.setClearButtonVisible(true);
         nameField.setValueChangeMode(ValueChangeMode.EAGER);
 
         TextField loginField = new TextField();
         loginField.setValue(person.getLogin());
+        loginField.setClearButtonVisible(true);
         loginField.setValueChangeMode(ValueChangeMode.EAGER);
 
         PasswordField passwordField = new PasswordField();
@@ -139,6 +143,11 @@ public final class UpdateUserView extends VerticalLayout implements HasUrlParame
         DatePicker birthDatePicker = new DatePicker();
         birthDatePicker.setValue(person.getBirthDate());
 
+        EmailField emailField = new EmailField();
+        emailField.setClearButtonVisible(true);
+        emailField.setValue(person.getEmail());
+        emailField.setErrorMessage("Please enter a valid email address");
+
         Button updateButton = new Button("Update");
         Button resetButton = new Button("Reset");
         Button cancelButton = new Button("Cancel");
@@ -148,6 +157,7 @@ public final class UpdateUserView extends VerticalLayout implements HasUrlParame
         layoutWithBinder.addPersonItem("Password:", passwordField);
         layoutWithBinder.addPersonItem("Confirm:", confirmPasswordField);
         layoutWithBinder.addPersonItem("Birthdate:", birthDatePicker);
+        layoutWithBinder.addPersonItem("Email:", emailField);
 
         HorizontalLayout dialogButtonsBar = new HorizontalLayout();
         dialogButtonsBar.add(updateButton, resetButton, cancelButton);
@@ -184,6 +194,9 @@ public final class UpdateUserView extends VerticalLayout implements HasUrlParame
                 .withValidator(
                         new DateRangeValidator("birthdate out of sense", LocalDate.ofYearDay(1, 1), LocalDate.now()))
                 .bind(Person::getBirthDate, Person::setBirthDate);
+
+        binder.forField(emailField).withValidator(new EmailValidator("correct email is mandatory"))
+                .bind(Person::getEmail, Person::setEmail);
 
         Dialog dialog = new Dialog();
         dialog.setCloseOnEsc(false);

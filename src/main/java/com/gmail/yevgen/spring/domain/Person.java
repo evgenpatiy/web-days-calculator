@@ -16,12 +16,9 @@ import org.springframework.stereotype.Service;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor
-@RequiredArgsConstructor
 @Getter
 @Setter
 @Service
@@ -30,12 +27,16 @@ public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    private @NonNull String name;
-    private @NonNull String login;
-    private @NonNull String password;
-    private @NonNull LocalDate birthDate;
+    private String name;
+    private String login;
+    private String password;
+    private LocalDate birthDate;
     @Lob
     @Type(type = "org.hibernate.type.ImageType")
     @Basic(fetch = FetchType.LAZY)
     private byte[] profilePicture;
+
+    private boolean active;
+    private String email;
+    private UUID activationCode;
 }
