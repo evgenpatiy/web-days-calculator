@@ -11,6 +11,10 @@ body {
   font-family: Roboto;
 }
 
+#whiteText {
+    color: white;
+}
+
 .scrollable {
   overflow: auto;
 }

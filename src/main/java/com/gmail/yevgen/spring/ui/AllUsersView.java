@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.time.temporal.ChronoUnit;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
@@ -29,6 +30,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.renderer.LocalDateRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
@@ -89,29 +91,36 @@ public final class AllUsersView extends VerticalLayout implements HasUrlParamete
         Grid<Person> grid = new Grid<>(Person.class);
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS,
                 GridVariant.LUMO_ROW_STRIPES);
-        grid.setColumns("name", "birthDate", "profilePicture");
+        grid.setColumns("name");
+        grid.addColumn(
+                new LocalDateRenderer<>(Person::getBirthDate, DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)))
+                .setHeader("Birth Date").setSortable(true).setComparator((person1, person2) -> {
+                    return person1.getBirthDate().compareTo(person2.getBirthDate());
+                });
+        grid.addColumn(person -> Long.toString(ChronoUnit.DAYS.between(person.getBirthDate(), LocalDate.now())))
+                .setHeader("Days lived").setSortable(true).setComparator((person1, person2) -> {
+                    return person1.getBirthDate().compareTo(person2.getBirthDate());
+                });
+
         grid.setItems(personRepository.findAll());
-        grid.addItemClickListener(event -> {
-            showDaysViewPanel(event.getItem().getId());
-        });
+        grid.addItemClickListener(event -> showDaysViewPanel(event.getItem().getId()));
 
         Label searchLabel = new Label("Search: ");
         TextField nameSearchField = new TextField();
         nameSearchField.setPlaceholder("by name");
         nameSearchField.setClearButtonVisible(true);
         nameSearchField.setValueChangeMode(ValueChangeMode.EAGER);
-        nameSearchField.addValueChangeListener(event -> {
-            grid.setItems(personRepository.findByAttributeContainsText("name", nameSearchField.getValue()));
-        });
+        nameSearchField.addValueChangeListener(event -> grid
+                .setItems(personRepository.findByAttributeContainsText("name", nameSearchField.getValue())));
 
         DatePicker dateSearchField = new DatePicker();
         dateSearchField.setPlaceholder("born before");
-        dateSearchField.addValueChangeListener(event -> {
-            grid.setItems(personRepository.findByDateBefore(dateSearchField.getValue()));
-        });
+        dateSearchField.addValueChangeListener(
+                event -> grid.setItems(personRepository.findByDateBefore(dateSearchField.getValue())));
 
         HorizontalLayout searchBar = new HorizontalLayout(searchLabel, nameSearchField, dateSearchField);
         searchBar.setDefaultVerticalComponentAlignment(Alignment.CENTER);
+        searchBar.getChildren().forEach(component -> component.setId("whiteText"));
         add(searchBar, grid);
     }
 
