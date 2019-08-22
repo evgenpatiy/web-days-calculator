@@ -31,7 +31,7 @@ WAR file inside **target** dir will be built, fill free to deploy it yourself
 
 ![Screenshot](docs/3_1.png)
 
-![Screenshot](docs/3_2.png)
+![Screenshot](docs/3_2.jpg)
 
 ![Screenshot](docs/4_1.png)
 
