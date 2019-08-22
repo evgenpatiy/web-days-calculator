@@ -9,15 +9,15 @@ Web application to see, how many days you're lived already :)
 
 `git clone https://github.com/evgenpatiy/web-days-calculator.git`
 
-* Find src/main/resources/application.properties file and fill properties marked XXXXXX with your custom security and mail account data
+* Find src/main/resources/application.properties file and fill properties marked XXXXXX with your custom data
 
 * Compile source code using command below. Warning: existing [Java 8](https://java.com/en/download/) and [MAVEN](https://maven.apache.org/) installation required!
 
 `mvn clean package`
 
-WAR file inside **target** dir will be built, fill free to deploy it yourself
+WAR file inside **target** dir will be built, fill free to deploy it by yourself
 
-* Automated build and deploy can be produced by:
+* Automated build and deploy could be produced by:
 
 `mvn clean tomcat7:deploy -Pproduction-mode`, but don't forget to adjust **tomcat7** section of **pom.xml** according to your particular environment
 
