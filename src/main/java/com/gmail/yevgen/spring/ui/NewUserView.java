@@ -58,16 +58,14 @@ public class NewUserView extends VerticalLayout {
     public static final String ROUTE = "signup";
     private final PersonRepository personRepository;
     private PBEStringEncryptor passwordEncryptor;
-    private MailWorker mailWorker;
     private Person person;
 
     @Autowired
     public NewUserView(PersonRepository personRepository, PBEStringEncryptor passwordEncryptor, MailWorker mailWorker) {
         this.personRepository = personRepository;
         this.passwordEncryptor = passwordEncryptor;
-        this.mailWorker = mailWorker;
-        PersonLayout layoutWithBinder = new PersonLayout();
 
+        PersonLayout layoutWithBinder = new PersonLayout();
         Label newUserHeader = new Label("New user registration");
         newUserHeader.addClassName("pageHeader");
 

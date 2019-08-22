@@ -33,13 +33,11 @@ public final class LoginView extends VerticalLayout {
     public static final String ROUTE = "login";
     private PersonRepository personRepository;
     private PBEStringEncryptor passwordEncryptor;
-    private MailWorker mailWorker;
 
     @Autowired
     public LoginView(PersonRepository personRepository, PBEStringEncryptor passwordEncryptor, MailWorker mailWorker) {
         this.personRepository = personRepository;
         this.passwordEncryptor = passwordEncryptor;
-        this.mailWorker = mailWorker;
 
         Label viewDetailsHeader = new Label("User authentication");
         viewDetailsHeader.addClassName("pageHeader");

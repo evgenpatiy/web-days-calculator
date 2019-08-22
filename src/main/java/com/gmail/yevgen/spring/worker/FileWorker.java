@@ -15,6 +15,7 @@ public class FileWorker {
         String text = "";
         ClassLoader classLoader = getClass().getClassLoader();
         URL resource = classLoader.getResource(fileName);
+
         @Cleanup
         BufferedReader reader = new BufferedReader(new FileReader(resource.getFile()));
         String line = "";
