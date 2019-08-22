@@ -15,6 +15,12 @@ body {
     color: white;
 }
 
+.leftBottomImage {
+    position: absolute;                  
+    bottom: 0;                          
+    left: 0; 
+}
+
 .scrollable {
   overflow: auto;
 }
@@ -53,9 +59,9 @@ body {
     color: white;
 }
 
-.loginIcon {
+.headerIcon {
     width: 30px;
-    height: 30 px;
+    height: 30px;
     top: -4px;
 }
 

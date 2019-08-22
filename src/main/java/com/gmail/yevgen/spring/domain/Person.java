@@ -38,5 +38,5 @@ public class Person {
 
     private boolean active;
     private String email;
-    private UUID activationCode;
+    private int activationCode;
 }

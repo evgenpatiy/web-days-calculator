@@ -26,6 +26,8 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -54,8 +56,11 @@ public final class AllUsersView extends VerticalLayout implements HasUrlParamete
     }
 
     public void showPeopleView(UUID id) {
-        Label updateUserHeader = new Label("People");
+        Icon icon = VaadinIcon.GLOBE_WIRE.create();
+        icon.addClassName("headerIcon");
+        Span updateUserHeader = new Span(icon, new Label(" People"));
         updateUserHeader.addClassName("pageHeader");
+
         Button backButton = new Button(" Back", VaadinIcon.ARROW_BACKWARD.create(), event -> {
             UI.getCurrent().navigate("account",
                     QueryParameters.simple(Stream.of(new SimpleEntry<>("user", String.valueOf(id)))
@@ -110,6 +115,7 @@ public final class AllUsersView extends VerticalLayout implements HasUrlParamete
         HorizontalLayout searchBar = new HorizontalLayout(searchLabel, nameSearchField, dateSearchField);
         searchBar.setDefaultVerticalComponentAlignment(Alignment.CENTER);
         searchBar.getChildren().forEach(component -> component.setId("whiteText"));
+
         add(searchBar, grid);
     }
 

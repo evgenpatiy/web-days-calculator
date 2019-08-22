@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.InvalidDataAccessResourceUsageException;
 
 import com.gmail.yevgen.spring.domain.Person;
 import com.gmail.yevgen.spring.domain.repository.PersonRepository;
@@ -23,8 +24,11 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEvent;
@@ -64,7 +68,9 @@ public final class UserInfoView extends VerticalLayout implements HasUrlParamete
         mainLayout.setJustifyContentMode(JustifyContentMode.CENTER);
         mainLayout.setAlignItems(Alignment.CENTER);
 
-        Label viewDetailsHeader = new Label("View account info");
+        Icon icon = VaadinIcon.USER_STAR.create();
+        icon.addClassName("headerIcon");
+        Span viewDetailsHeader = new Span(icon, new Label(" View account info"));
         viewDetailsHeader.addClassName("pageHeader");
         add(viewDetailsHeader);
 
@@ -120,7 +126,11 @@ public final class UserInfoView extends VerticalLayout implements HasUrlParamete
             Button confirmDeleteButton = new Button("Delete", evt -> {
                 deleteAccountDialog.close();
                 dialog.close();
-                personRepository.delete(person);
+                try {
+                    personRepository.delete(person);
+                } catch (InvalidDataAccessResourceUsageException ex) {
+                    Notification.show("Database error!", 3000, Position.MIDDLE);
+                }
                 Notification.show("Account of " + person.getName() + " deleted");
                 UI.getCurrent().navigate(MainView.class);
             });

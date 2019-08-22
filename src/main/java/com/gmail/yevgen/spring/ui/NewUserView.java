@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -15,9 +14,11 @@ import javax.imageio.ImageIO;
 
 import org.jasypt.encryption.pbe.PBEStringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.InvalidDataAccessResourceUsageException;
 
 import com.gmail.yevgen.spring.domain.Person;
 import com.gmail.yevgen.spring.domain.repository.PersonRepository;
+import com.gmail.yevgen.spring.worker.ActivationWorker;
 import com.gmail.yevgen.spring.worker.MailWorker;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -27,6 +28,9 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.NativeButton;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -61,12 +65,15 @@ public class NewUserView extends VerticalLayout {
     private Person person;
 
     @Autowired
-    public NewUserView(PersonRepository personRepository, PBEStringEncryptor passwordEncryptor, MailWorker mailWorker) {
+    public NewUserView(PersonRepository personRepository, PBEStringEncryptor passwordEncryptor, MailWorker mailWorker,
+            ActivationWorker activationWorker) {
         this.personRepository = personRepository;
         this.passwordEncryptor = passwordEncryptor;
 
         PersonLayout layoutWithBinder = new PersonLayout();
-        Label newUserHeader = new Label("New user registration");
+        Icon icon = VaadinIcon.USER.create();
+        icon.addClassName("headerIcon");
+        Span newUserHeader = new Span(icon, new Label(" New user registration"));
         newUserHeader.addClassName("pageHeader");
 
         Binder<Person> binder = new Binder<>();
@@ -200,37 +207,44 @@ public class NewUserView extends VerticalLayout {
                     wrongLoginNotification.setPosition(Position.MIDDLE);
                     wrongLoginNotification.open();
                 } else {
-                    person.setActivationCode(UUID.randomUUID());
+                    person.setActivationCode(activationWorker.getActivationCode());
 
                     mailWorker.sendMail(person.getEmail(), "WebDays calculator activation code",
-                            person.getActivationCode().toString());
+                            "Your activation code: " + String.valueOf(person.getActivationCode()));
 
                     Dialog confirmDialog = new Dialog();
                     Label confirmDialogLabel = new Label("Check e-mail and confirm activation code you got");
                     TextField activationCodeTextField = new TextField();
+                    activationCodeTextField.setClearButtonVisible(true);
+                    activationCodeTextField.setRequired(true);
                     activationCodeTextField.setSizeFull();
                     Button confirmActivationCodeButton = new Button("Confirm", e -> {
-                        try {
-                            if (person.getActivationCode()
-                                    .compareTo(UUID.fromString(activationCodeTextField.getValue())) == 0) {
-                                person.setActive(true);
+                        if (String.valueOf(person.getActivationCode())
+                                .equalsIgnoreCase(activationCodeTextField.getValue())) {
+                            person.setActive(true);
+                            try {
                                 savePerson(person);
-                                confirmDialog.close();
-                                dialog.close();
-                                Notification.show("Person " + person.getName() + " succesfully created!");
-                                UI.getCurrent().navigate("account",
-                                        QueryParameters.simple(Stream
-                                                .of(new SimpleEntry<>("user", String.valueOf(person.getId()))).collect(
-                                                        Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue))));
-                            } else {
-                                Notification.show("Wrong activation code");
+                            } catch (InvalidDataAccessResourceUsageException ex) {
+                                Notification.show("Database error!", 3000, Position.MIDDLE);
                             }
-                        } catch (IllegalArgumentException ex) {
+                            confirmDialog.close();
+                            dialog.close();
+                            Notification.show("Person " + person.getName() + " succesfully created!");
+                            UI.getCurrent().navigate("account",
+                                    QueryParameters.simple(Stream
+                                            .of(new SimpleEntry<>("user", String.valueOf(person.getId())))
+                                            .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue))));
+                        } else {
                             Notification.show("Wrong activation code");
                         }
                     });
+                    Button cancelActivationCodeButton = new Button("Cancel", e -> {
+                        confirmDialog.close();
+                    });
+                    HorizontalLayout confirmDialogButtonsBar = new HorizontalLayout(confirmActivationCodeButton,
+                            cancelActivationCodeButton);
                     VerticalLayout confirmDialogLayout = new VerticalLayout(confirmDialogLabel, activationCodeTextField,
-                            confirmActivationCodeButton);
+                            confirmDialogButtonsBar);
                     confirmDialogLayout.setAlignItems(Alignment.CENTER);
                     confirmDialog.add(confirmDialogLayout);
                     confirmDialog.setCloseOnEsc(false);

@@ -24,13 +24,9 @@ import com.vaadin.flow.server.PWA;
 @PWA(name = "Web days calculator", shortName = "daysCalc", iconPath = "../frontend/img/logo.png")
 public final class MainView extends VerticalLayout {
     private static final long serialVersionUID = 7657167124498205619L;
-    @SuppressWarnings("unused")
-    private FileWorker fileWorker;
 
     @Autowired
     public MainView(PersonRepository personRepository, PBEStringEncryptor passwordEncryptor, FileWorker fileWorker) {
-        this.fileWorker = fileWorker;
-
         Button signInButton = new Button(" Sign In", VaadinIcon.SIGN_IN.create(),
                 event -> UI.getCurrent().navigate(LoginView.class));
         signInButton.addClassName("topButton");

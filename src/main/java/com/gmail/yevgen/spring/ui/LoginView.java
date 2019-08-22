@@ -17,6 +17,9 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.Notification.Position;
@@ -39,7 +42,9 @@ public final class LoginView extends VerticalLayout {
         this.personRepository = personRepository;
         this.passwordEncryptor = passwordEncryptor;
 
-        Label viewDetailsHeader = new Label("User authentication");
+        Icon icon = VaadinIcon.USER_CHECK.create();
+        icon.addClassName("headerIcon");
+        Span viewDetailsHeader = new Span(icon, new Label(" User authentication"));
         viewDetailsHeader.addClassName("pageHeader");
         add(viewDetailsHeader);
 
@@ -56,7 +61,8 @@ public final class LoginView extends VerticalLayout {
                     } else {
                         Person p = personRepository.findByLogin(loginField.getValue());
                         mailWorker.sendMail(p.getEmail(), "WebDays calculator password",
-                                passwordEncryptor.decrypt(p.getPassword()));
+                                "Your current password: " + passwordEncryptor.decrypt(p.getPassword())
+                                        + System.lineSeparator() + "Change it immediately to prevent security issues!");
                         Notification.show(loginField.getValue() + ", check your email");
                         forgotPasswordDialog.close();
                     }

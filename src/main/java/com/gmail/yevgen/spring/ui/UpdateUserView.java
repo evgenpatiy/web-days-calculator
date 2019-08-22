@@ -17,6 +17,7 @@ import javax.imageio.ImageIO;
 
 import org.jasypt.encryption.pbe.PBEStringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.InvalidDataAccessResourceUsageException;
 
 import com.gmail.yevgen.spring.domain.Person;
 import com.gmail.yevgen.spring.domain.repository.PersonRepository;
@@ -24,10 +25,14 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.NativeButton;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
@@ -72,12 +77,19 @@ public final class UpdateUserView extends VerticalLayout implements HasUrlParame
     private final void savePerson(Person p) {
         p.setPassword(passwordEncryptor.encrypt(p.getPassword()));
         p.setLogin(p.getLogin().toLowerCase());
-        personRepository.save(p);
+        try {
+            personRepository.save(p);
+        } catch (InvalidDataAccessResourceUsageException ex) {
+            Notification.show("Database error!", 3000, Position.MIDDLE);
+        }
     }
 
     private final void showUpdateInfoView(UUID id) {
         PersonLayout layoutWithBinder = new PersonLayout();
-        H3 updateUserHeader = new H3("Update user info");
+
+        Icon icon = VaadinIcon.USER_CARD.create();
+        icon.addClassName("headerIcon");
+        Span updateUserHeader = new Span(icon, new Label(" Update user info"));
         updateUserHeader.addClassName("pageHeader");
 
         Binder<Person> binder = new Binder<>();
