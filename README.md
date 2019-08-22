@@ -1,24 +1,44 @@
-# Project Base for Vaadin Flow and Spring Boot
+# Web-days-calculator
+# (made with Java 8 / Vaadin Flow v13 / PostgreSQL / Spring Boot-Data-Security-Mail) 
 
-This project can be used as a starting point to create your own Vaadin Flow application with Spring Boot.
-It contains all the necessary configuration and some placeholder files to get you started.
+Web application to see, how many days you're lived already :)
 
-The best way to use it by via [vaadin.com/start](https://vaadin.com/start) - you can get only the necessary parts and choose the package naming you want to use.
+## Installation and usage (tested on Debian Linux 9.9 / Apache Tomcat 9.0.22)
 
-Import the project to the IDE of your choosing as a Maven project. 
+* Clone current git repository to local machine
 
-Run application using `mvn spring-boot:run` or directly running Application class from your IDE.
+`git clone https://github.com/evgenpatiy/web-days-calculator.git`
 
-Open http://localhost:8080/ in browser
+* Find src/main/resources/application.properties file and fill properties marked XXXXXX with your custom security and mail account data
 
+* Compile source code using command below. Warning: existing [Java 8](https://java.com/en/download/) and [MAVEN](https://maven.apache.org/) installation required!
 
-For documentation on using Vaadin Flow and Spring, visit [vaadin.com/docs](https://vaadin.com/docs/v10/flow/spring/tutorial-spring-basic.html)
+`mvn clean package`
 
-For more information on Vaadin Flow, visit https://vaadin.com/flow.
+WAR file inside **target** dir will be built, fill free to deploy it yourself
 
-Branching information:
-* `master` the latest version of the starter, using the latest platform snapshot
-* `v10` the version for Vaadin 10
-* `v11` the version for Vaadin 11
-* `v12` the version for Vaadin 12
-* `v13` the version for Vaadin 13
+* Automated build and deploy can be produced by:
+
+`mvn clean tomcat7:deploy -Pproduction-mode`, but don't forget to adjust **tomcat7** section of **pom.xml** according to your particular environment
+
+![Screenshot](docs/1_1.png)
+
+![Screenshot](docs/1_2.jpg)
+
+![Screenshot](docs/2_1.png)
+
+![Screenshot](docs/2_2.jpg)
+
+![Screenshot](docs/3_1.png)
+
+![Screenshot](docs/3_2.png)
+
+![Screenshot](docs/4_1.png)
+
+## Author
+
+- Yevgen Patiy
+
+## License
+
+Feel free to use, modify or distribute this software. This project is licensed under the [GNU GPL 2.0 license](https://www.gnu.org/licenses/old-licenses/gpl-2.0.uk.html).
